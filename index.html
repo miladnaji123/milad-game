@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>میلاد گیم | تخته نرد</title>
+<title>میلاد گیم | بازی تخته نرد</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -15,48 +17,46 @@ body {
     margin: 0;
     min-height: 100vh;
     font-family: Tahoma, Arial, sans-serif;
-    background:
-        radial-gradient(circle at top, #8b542d 0%, #3b1d0d 45%, #170b05 100%);
+    background: linear-gradient(135deg, #2b160b, #6e3b1d, #1b0d06);
     color: white;
 }
 
 .container {
-    width: 94%;
+    width: 92%;
     max-width: 650px;
     margin: auto;
-    padding: 25px 0 50px;
+    padding: 30px 0;
 }
 
 .logo {
     text-align: center;
-    font-size: 70px;
+    font-size: 65px;
     margin-bottom: 5px;
 }
 
 .title {
     text-align: center;
-    font-size: 34px;
+    font-size: 32px;
     font-weight: bold;
     color: #ffd98a;
-    text-shadow: 0 3px 8px #000;
+    text-shadow: 0 3px 8px black;
 }
 
 .subtitle {
     text-align: center;
-    color: #f0d1a0;
-    font-size: 17px;
+    color: #f3d2a4;
     margin: 10px 0 25px;
 }
 
 .card {
-    background: rgba(47, 24, 12, .96);
-    border: 2px solid #a96832;
-    border-radius: 22px;
+    background: #351b0d;
+    border: 2px solid #9a5b2d;
+    border-radius: 20px;
     padding: 25px;
-    box-shadow: 0 12px 35px rgba(0,0,0,.65);
+    box-shadow: 0 10px 30px black;
 }
 
-.card h2 {
+h2 {
     text-align: center;
     color: #ffd98a;
     margin-top: 0;
@@ -64,36 +64,35 @@ body {
 
 button {
     width: 100%;
-    padding: 16px;
+    padding: 15px;
     margin: 7px 0;
-    border: 0;
+    border: none;
     border-radius: 12px;
     color: white;
     font-family: Tahoma;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,.3);
 }
 
 button:active {
-    transform: scale(.97);
+    transform: scale(0.97);
 }
 
 .offline {
-    background: #9b5c28;
+    background: #a7622b;
 }
 
 .online {
-    background: #16866d;
+    background: #15866d;
 }
 
 .join {
-    background: #7550a8;
+    background: #7650a5;
 }
 
 .chat {
-    background: #8c3f67;
+    background: #963f68;
 }
 
 .back {
@@ -105,15 +104,15 @@ button:active {
 }
 
 .room-code {
-    background: #1c0e07;
-    border: 2px dashed #d79a52;
+    background: #160b05;
+    border: 2px dashed #e0a75c;
     border-radius: 12px;
     padding: 18px;
     margin: 20px 0;
     text-align: center;
-    font-size: 38px;
+    font-size: 36px;
     font-weight: bold;
-    letter-spacing: 8px;
+    letter-spacing: 7px;
     color: #ffe19b;
     direction: ltr;
 }
@@ -122,15 +121,16 @@ button:active {
     text-align: center;
     color: #ddd;
     margin: 15px 0;
+    line-height: 2;
 }
 
 input {
     width: 100%;
-    padding: 15px;
+    padding: 14px;
     margin: 8px 0;
     border-radius: 10px;
-    border: 2px solid #986034;
-    background: #1c0e07;
+    border: 2px solid #9a5b2d;
+    background: #160b05;
     color: white;
     font-size: 18px;
     font-family: Tahoma;
@@ -142,13 +142,314 @@ input {
     text-align: center;
     color: #ffd98a;
     margin-top: 15px;
-    line-height: 1.8;
+    line-height: 2;
 }
 
 .chat-box {
-    height: 260px;
+    height: 250px;
     overflow-y: auto;
-    background: #1a0d06;
+    background: #160b05;
     border: 1px solid #71431f;
     border-radius: 12px;
-    padding: 12
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.chat-message {
+    background: #68401f;
+    padding: 10px;
+    border-radius: 9px;
+    margin-bottom: 8px;
+    text-align: right;
+}
+
+.chat-input {
+    display: flex;
+    gap: 8px;
+}
+
+.chat-input input {
+    flex: 1;
+    margin: 0;
+}
+
+.chat-input button {
+    width: 100px;
+    margin: 0;
+    background: #16866d;
+}
+
+.footer {
+    text-align: center;
+    color: #c9a77c;
+    margin-top: 25px;
+    font-size: 14px;
+}
+
+@media (max-width: 500px) {
+
+    .title {
+        font-size: 28px;
+    }
+
+    .logo {
+        font-size: 55px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .chat-input {
+        flex-direction: column;
+    }
+
+    .chat-input button {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="logo">🎲</div>
+
+    <div class="title">
+        میلاد گیم
+    </div>
+
+    <div class="subtitle">
+        بازی تخته نرد آنلاین و آفلاین با دوستان
+    </div>
+
+
+    <!-- صفحه اصلی -->
+
+    <div id="homePage" class="card">
+
+        <h2>
+            🎮 انتخاب نوع بازی
+        </h2>
+
+        <button class="offline" onclick="offlineGame()">
+            🎲 بازی آفلاین دو نفره
+        </button>
+
+        <button class="online" onclick="createRoom()">
+            🌐 ساخت اتاق آنلاین
+        </button>
+
+        <button class="join" onclick="showJoin()">
+            🔑 ورود به اتاق دوست
+        </button>
+
+        <button class="chat" onclick="showChat()">
+            💬 چت فارسی
+        </button>
+
+    </div>
+
+
+    <!-- صفحه ساخت اتاق -->
+
+    <div id="roomPage" class="card hidden">
+
+        <h2>
+            🏠 ساخت اتاق بازی
+        </h2>
+
+        <div class="info">
+            کد اتاق شما:
+        </div>
+
+        <div id="roomCode" class="room-code">
+            ------
+        </div>
+
+        <button class="online" onclick="copyRoomCode()">
+            📋 کپی کد اتاق
+        </button>
+
+        <button class="join" onclick="inviteFriend()">
+            📤 دعوت از دوست
+        </button>
+
+        <button class="online" onclick="startOnlineGame()">
+            🎲 شروع بازی
+        </button>
+
+        <button class="back" onclick="goHome()">
+            ↩️ بازگشت
+        </button>
+
+        <div id="roomMessage" class="message"></div>
+
+    </div>
+
+
+    <!-- صفحه ورود به اتاق -->
+
+    <div id="joinPage" class="card hidden">
+
+        <h2>
+            🔑 ورود به اتاق دوست
+        </h2>
+
+        <div class="info">
+            کد شش رقمی اتاق را وارد کنید
+        </div>
+
+        <input
+            id="joinCode"
+            type="text"
+            maxlength="6"
+            inputmode="numeric"
+            placeholder="مثلاً 123456">
+
+        <button class="online" onclick="joinRoom()">
+            🚪 ورود به اتاق
+        </button>
+
+        <button class="back" onclick="goHome()">
+            ↩️ بازگشت
+        </button>
+
+        <div id="joinMessage" class="message"></div>
+
+    </div>
+
+
+    <!-- صفحه چت -->
+
+    <div id="chatPage" class="card hidden">
+
+        <h2>
+            💬 چت فارسی
+        </h2>
+
+        <div id="chatBox" class="chat-box">
+
+            <div class="chat-message">
+                🤖 سیستم: به چت میلاد گیم خوش آمدید.
+            </div>
+
+        </div>
+
+        <div class="chat-input">
+
+            <input
+                id="chatInput"
+                type="text"
+                placeholder="پیام خود را بنویسید">
+
+            <button onclick="sendMessage()">
+                ارسال
+            </button>
+
+        </div>
+
+        <button class="back" onclick="goHome()">
+            ↩️ بازگشت
+        </button>
+
+    </div>
+
+
+    <div class="footer">
+        🎲 میلاد گیم
+        <br>
+        نسخه آزمایشی
+    </div>
+
+</div>
+
+
+<script>
+
+function hidePages() {
+
+    document
+        .getElementById("homePage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("roomPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("joinPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("chatPage")
+        .classList.add("hidden");
+
+}
+
+
+function goHome() {
+
+    hidePages();
+
+    document
+        .getElementById("homePage")
+        .classList.remove("hidden");
+
+}
+
+
+function generateRoomCode() {
+
+    return Math.floor(
+        100000 +
+        Math.random() * 900000
+    ).toString();
+
+}
+
+
+function createRoom() {
+
+    hidePages();
+
+    let code =
+        generateRoomCode();
+
+    document
+        .getElementById("roomCode")
+        .innerText = code;
+
+    document
+        .getElementById("roomPage")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("roomMessage")
+        .innerText =
+        "✅ اتاق ساخته شد. کد را برای دوستت بفرست.";
+
+}
+
+
+function copyRoomCode() {
+
+    let code =
+        document
+        .getElementById("roomCode")
+        .innerText;
+
+    if (navigator.clipboard) {
+
+        navigator.clipboard
+        .writeText(code)
+        .then(function() {
+
+            document
+           
