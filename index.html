@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
 <title>میلاد گیم | تخته نرد</title>
 
 <style>
-
 * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -18,7 +17,7 @@ body {
     min-height: 100vh;
     font-family: Tahoma, Arial, sans-serif;
     background:
-        radial-gradient(circle at top, #8b542d, #3b1d0d 50%, #170b05);
+        radial-gradient(circle at top, #8b542d 0%, #3b1d0d 45%, #170b05 100%);
     color: white;
 }
 
@@ -26,181 +25,197 @@ body {
     width: 96%;
     max-width: 900px;
     margin: auto;
-    padding: 20px 0 40px;
+    padding: 15px 0 35px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 12px;
 }
 
 .logo {
-    text-align: center;
-    font-size: 55px;
+    font-size: 45px;
 }
 
 h1 {
-    text-align: center;
+    margin: 3px 0;
     color: #ffd98a;
-    margin: 5px 0;
+    font-size: 28px;
+    text-shadow: 0 3px 8px #000;
 }
 
 .subtitle {
-    text-align: center;
-    color: #f1d0a0;
-    margin-bottom: 20px;
+    color: #f0d1a0;
+    font-size: 14px;
 }
 
-.page {
-    background: rgba(45, 22, 10, .97);
-    border: 2px solid #a56832;
+.game-page {
+    background: rgba(47, 24, 12, .97);
+    border: 2px solid #a96832;
     border-radius: 20px;
-    padding: 18px;
-    box-shadow: 0 10px 35px rgba(0,0,0,.7);
+    padding: 12px;
+    box-shadow: 0 12px 35px rgba(0,0,0,.65);
 }
 
-.hidden {
-    display: none !important;
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.turn {
+    background: #1c0e07;
+    border: 1px solid #a96832;
+    border-radius: 10px;
+    padding: 10px;
+    flex: 1;
+    text-align: center;
+    color: #ffd98a;
+    font-weight: bold;
+}
+
+.dice-area {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    min-height: 58px;
+    margin: 8px 0;
+}
+
+.die {
+    width: 52px;
+    height: 52px;
+    background: white;
+    color: #111;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px #000;
+}
+
+.controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
 }
 
 button {
-    width: 100%;
-    padding: 15px;
-    margin: 7px 0;
     border: 0;
-    border-radius: 12px;
-    color: white;
+    border-radius: 10px;
+    padding: 12px;
     font-family: Tahoma;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: bold;
     cursor: pointer;
+    color: white;
 }
 
 button:active {
-    transform: scale(.97);
+    transform: scale(.96);
 }
 
-.btn-offline {
-    background: #a86228;
-}
-
-.btn-back {
-    background: #555;
-}
-
-.btn-dice {
+.roll-btn {
     background: #16866d;
+    flex: 1;
 }
 
-.btn-reset {
-    background: #7650a5;
+.new-btn {
+    background: #8b5a2b;
+    flex: 1;
 }
 
-#home h2,
-#gamePage h2 {
+.menu-btn {
+    background: #555;
+    flex: 1;
+}
+
+.message {
     text-align: center;
+    min-height: 25px;
     color: #ffd98a;
-}
-
-.info {
-    text-align: center;
-    background: #241107;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 15px;
-}
-
-#turnText {
-    color: #ffe19b;
-    font-size: 19px;
-    font-weight: bold;
-}
-
-#diceText {
-    font-size: 24px;
-    margin-top: 8px;
+    font-size: 14px;
+    margin: 5px 0 10px;
 }
 
 /* تخته */
 
-.board-wrapper {
+.board {
+    position: relative;
     width: 100%;
-    overflow-x: auto;
-    padding: 5px;
+    max-width: 820px;
+    margin: auto;
+    background:
+        linear-gradient(90deg, #6e3518, #a96532, #6e3518);
+    border: 8px solid #3a1b0b;
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow:
+        inset 0 0 0 3px #c58a4b,
+        0 10px 25px #000;
 }
 
-.board {
-    min-width: 620px;
-    height: 390px;
-    background: #7b421e;
-    border: 12px solid #3a1b0b;
-    border-radius: 12px;
+.board-inner {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    gap: 5px;
-    padding: 10px;
-    position: relative;
-    box-shadow:
-        inset 0 0 20px rgba(0,0,0,.7),
-        0 8px 20px rgba(0,0,0,.6);
+    gap: 3px;
+    min-height: 520px;
+}
+
+.half {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 100%;
+    background: #35190b;
+    z-index: 20;
+    pointer-events: none;
 }
 
 .point {
     position: relative;
+    height: 250px;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.point.top {
     justify-content: flex-start;
-    cursor: pointer;
-    min-width: 35px;
-}
-
-.point::before {
-    content: "";
-    width: 0;
-    height: 0;
-    border-left: 22px solid transparent;
-    border-right: 22px solid transparent;
-    border-top: 160px solid #d9a05d;
-    position: absolute;
-    top: 0;
-}
-
-.point:nth-child(even)::before {
-    border-top-color: #4b2410;
 }
 
 .point.bottom {
     justify-content: flex-end;
 }
 
-.point.bottom::before {
-    top: auto;
-    bottom: 0;
-    border-top: none;
-    border-bottom: 160px solid #d9a05d;
-}
-
-.point.bottom:nth-child(even)::before {
-    border-bottom-color: #4b2410;
-}
-
-.point.selected {
-    background: rgba(255,215,80,.25);
-    border-radius: 8px;
-}
-
-.point-number {
+.triangle {
     position: absolute;
-    z-index: 3;
-    font-size: 11px;
-    color: #ffe7b0;
+    left: 10%;
+    width: 80%;
+    height: 210px;
+    clip-path: polygon(50% 100%, 0 0, 100% 0);
+    background: #d59a5b;
+    opacity: .9;
+    pointer-events: none;
 }
 
-.bottom .point-number {
-    bottom: 2px;
+.bottom .triangle {
+    transform: rotate(180deg);
 }
 
-.top .point-number {
-    top: 2px;
+.point:nth-child(odd) .triangle {
+    background: #42200f;
 }
 
-.checkers {
+.stack {
     position: relative;
     z-index: 5;
     display: flex;
@@ -208,102 +223,231 @@ button:active {
     align-items: center;
 }
 
-.bottom .checkers {
+.bottom .stack {
     flex-direction: column-reverse;
 }
 
 .checker {
-    width: 35px;
-    height: 35px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     margin: -3px 0;
-    border: 2px solid #111;
-    box-shadow: 0 3px 5px rgba(0,0,0,.6);
+    border: 2px solid #222;
+    box-shadow:
+        0 3px 5px rgba(0,0,0,.7),
+        inset 0 2px 3px rgba(255,255,255,.3);
     cursor: pointer;
+    transition: .15s;
 }
 
 .checker.white {
     background:
-        radial-gradient(circle at 35% 30%, #fff, #ddd 45%, #999);
+        radial-gradient(circle at 35% 30%, #fff, #ddd 55%, #aaa);
+    border-color: #777;
 }
 
 .checker.black {
     background:
-        radial-gradient(circle at 35% 30%, #555, #111 55%, #000);
+        radial-gradient(circle at 35% 30%, #777, #222 55%, #050505);
+    border-color: #000;
 }
+
+.checker.selected {
+    outline: 4px solid #ffe16b;
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.count {
+    position: absolute;
+    z-index: 30;
+    background: #111;
+    color: white;
+    border-radius: 12px;
+    padding: 2px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px #000;
+}
+
+.top .count {
+    top: 8px;
+}
+
+.bottom .count {
+    bottom: 8px;
+}
+
+/* شماره خانه‌ها */
+
+.point-number {
+    position: absolute;
+    z-index: 30;
+    font-size: 10px;
+    color: #ffe0a0;
+    background: rgba(0,0,0,.45);
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.top .point-number {
+    top: 2px;
+}
+
+.bottom .point-number {
+    bottom: 2px;
+}
+
+/* بار */
 
 .bar {
     position: absolute;
+    z-index: 50;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     width: 65px;
-    height: 55px;
-    background: #2b1207;
-    border-radius: 10px;
-    z-index: 10;
+    min-height: 130px;
+    background: rgba(24,10,4,.92);
+    border: 2px solid #d09a55;
+    border-radius: 12px;
+    padding: 5px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 5px;
 }
 
-.bar .checker {
-    margin: 0;
-    width: 28px;
-    height: 28px;
+.bar-title {
+    font-size: 10px;
+    color: #ffd98a;
 }
 
-.controls {
-    margin-top: 15px;
+.bar-piece {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #222;
 }
 
-.message {
+.bar-piece.white {
+    background: #eee;
+}
+
+.bar-piece.black {
+    background: #222;
+}
+
+/* خارج شده */
+
+.off-board {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.off-box {
+    flex: 1;
+    background: #1c0e07;
+    border: 1px solid #71431f;
+    border-radius: 10px;
+    padding: 8px;
     text-align: center;
     color: #ffd98a;
-    min-height: 25px;
-    line-height: 1.8;
+}
+
+.off-pieces {
+    min-height: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 5px;
+}
+
+.off-piece {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+.off-piece.white {
+    background: white;
+    border: 2px solid #888;
+}
+
+.off-piece.black {
+    background: #222;
+    border: 2px solid #000;
 }
 
 .rules {
-    background: #241107;
-    padding: 12px;
-    border-radius: 12px;
-    margin-top: 15px;
-    line-height: 2;
-    font-size: 14px;
-}
-
-.footer {
+    margin-top: 12px;
+    padding: 10px;
+    background: rgba(0,0,0,.25);
+    border-radius: 10px;
+    color: #e5c69e;
+    font-size: 12px;
+    line-height: 1.8;
     text-align: center;
-    color: #c9a77c;
-    margin-top: 20px;
 }
 
-@media(max-width:700px) {
+@media (max-width: 600px) {
+
+    .container {
+        width: 99%;
+        padding-top: 5px;
+    }
+
+    .game-page {
+        padding: 6px;
+    }
 
     .board {
-        min-width: 570px;
-        height: 350px;
+        border-width: 5px;
+        padding: 4px;
     }
 
-    .point::before {
-        border-left-width: 19px;
-        border-right-width: 19px;
-        border-top-width: 140px;
+    .board-inner {
+        min-height: 430px;
+        gap: 2px;
     }
 
-    .point.bottom::before {
-        border-bottom-width: 140px;
+    .point {
+        height: 205px;
+    }
+
+    .triangle {
+        height: 175px;
     }
 
     .checker {
-        width: 31px;
-        height: 31px;
+        width: 29px;
+        height: 29px;
+        margin: -2px 0;
     }
 
-}
+    .bar {
+        width: 45px;
+        min-height: 100px;
+    }
 
+    .half {
+        width: 12px;
+    }
+
+    .die {
+        width: 45px;
+        height: 45px;
+        font-size: 24px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+}
 </style>
 </head>
 
@@ -311,156 +455,101 @@ button:active {
 
 <div class="container">
 
-<div class="logo">🎲</div>
-
-<h1>میلاد گیم</h1>
-
-<div class="subtitle">
-بازی تخته نرد آنلاین و آفلاین با دوستان
+<div class="header">
+    <div class="logo">🎲</div>
+    <h1>میلاد گیم</h1>
+    <div class="subtitle">
+        تخته نرد آفلاین دو نفره
+    </div>
 </div>
 
+<div class="game-page">
 
-<!-- صفحه اصلی -->
-
-<div id="home" class="page">
-
-<h2>🎮 انتخاب نوع بازی</h2>
-
-<button id="offlineBtn" class="btn-offline">
-🎲 شروع بازی آفلاین دو نفره
-</button>
-
+<div class="top-bar">
+    <div id="turnText" class="turn">
+        نوبت: ⚪ سفید
+    </div>
 </div>
 
-
-<!-- صفحه بازی -->
-
-<div id="gamePage" class="page hidden">
-
-<h2>🎲 تخته نرد آفلاین</h2>
-
-<div class="info">
-
-<div id="turnText">
-نوبت بازیکن سفید
+<div class="dice-area">
+    <div id="die1" class="die">-</div>
+    <div id="die2" class="die">-</div>
 </div>
-
-<div id="diceText">
-برای شروع تاس بیندازید
-</div>
-
-</div>
-
-
-<div class="board-wrapper">
-
-<div id="board" class="board">
-
-<!-- خانه‌ها با جاوااسکریپت ساخته می‌شوند -->
-
-<div class="bar">
-
-<div id="barWhite"></div>
-<div id="barBlack"></div>
-
-</div>
-
-</div>
-
-</div>
-
 
 <div class="controls">
+    <button id="rollBtn" class="roll-btn">
+        🎲 انداختن تاس
+    </button>
 
-<button id="diceBtn" class="btn-dice">
-🎲 انداختن تاس
-</button>
+    <button id="newBtn" class="new-btn">
+        🔄 بازی جدید
+    </button>
 
-<button id="resetBtn" class="btn-reset">
-🔄 شروع بازی جدید
-</button>
+    <button id="menuBtn" class="menu-btn">
+        ↩️ منو
+    </button>
+</div>
 
-<button id="backBtn" class="btn-back">
-↩️ بازگشت به صفحه اصلی
-</button>
+<div id="message" class="message">
+    برای شروع، روی «انداختن تاس» بزنید.
+</div>
+
+<div class="board">
+
+<div class="board-inner" id="board">
+
+<div class="half"></div>
+
+<div class="bar">
+    <div class="bar-title">بار</div>
+    <div id="barWhite"></div>
+    <div id="barBlack"></div>
+</div>
 
 </div>
 
-
-<div id="gameMessage" class="message">
-ابتدا تاس بیندازید.
 </div>
 
+<div class="off-board">
+
+<div class="off-box">
+    ⚪ سفید خارج‌شده:
+    <div id="offWhite" class="off-pieces"></div>
+</div>
+
+<div class="off-box">
+    ⚫ سیاه خارج‌شده:
+    <div id="offBlack" class="off-pieces"></div>
+</div>
+
+</div>
 
 <div class="rules">
-
-<b>راهنمای بازی:</b>
-
+🎲 ابتدا تاس بریزید. سپس مهره خود را لمس کنید و بعد خانه مقصد را لمس کنید.
 <br>
-
-۱. ابتدا روی «انداختن تاس» بزنید.
-
+⚪ سفید در جهت افزایش شماره خانه‌ها حرکت می‌کند.
 <br>
-
-۲. روی مهره خود کلیک کنید.
-
+⚫ سیاه در جهت کاهش شماره خانه‌ها حرکت می‌کند.
 <br>
-
-۳. سپس روی خانه مقصد کلیک کنید.
-
+💥 اگر در خانه مقصد فقط یک مهره حریف باشد، آن مهره زده می‌شود.
 <br>
-
-۴. در این نسخه، بازی برای دو نفر روی یک گوشی است.
-
-<br>
-
-۵. قوانین کامل حرکت و برد در مراحل بعدی کامل‌تر می‌شود.
-
+🏁 برای خارج کردن مهره‌ها باید همه مهره‌های شما در محدوده خانه‌های خودتان باشند.
 </div>
 
 </div>
 
-
-<div class="footer">
-
-🎲 میلاد گیم
-<br>
-نسخه آفلاین آزمایشی
-
 </div>
-
-</div>
-
 
 <script>
 
-const home =
-document.getElementById("home");
+const board = document.getElementById("board");
+const turnText = document.getElementById("turnText");
+const die1 = document.getElementById("die1");
+const die2 = document.getElementById("die2");
+const message = document.getElementById("message");
+const rollBtn = document.getElementById("rollBtn");
 
-const gamePage =
-document.getElementById("gamePage");
-
-const board =
-document.getElementById("board");
-
-const turnText =
-document.getElementById("turnText");
-
-const diceText =
-document.getElementById("diceText");
-
-const gameMessage =
-document.getElementById("gameMessage");
-
-const diceBtn =
-document.getElementById("diceBtn");
-
-const resetBtn =
-document.getElementById("resetBtn");
-
-const backBtn =
-document.getElementById("backBtn");
-
+let points = Array(24).fill(null).map(() => []);
 
 let currentPlayer = "white";
 
@@ -468,619 +557,701 @@ let dice = [];
 
 let selectedPoint = null;
 
+let offWhite = 0;
+let offBlack = 0;
 
-/*
-ساخت وضعیت اولیه تخته
-شماره خانه‌ها:
-0 تا 23
-*/
+let barWhite = 0;
+let barBlack = 0;
 
-let points = [];
-
-
-function createInitialBoard() {
-
-points = [];
-
-for(let i = 0; i < 24; i++) {
-
-points.push([]);
-
-}
+let rolled = false;
 
 
 /*
-مهره‌های سفید
+شروع استاندارد تخته نرد:
+
+خانه‌ها از 1 تا 24
+
+سفید:
+خانه 1 = 2
+خانه 12 = 5
+خانه 17 = 3
+خانه 19 = 5
+
+سیاه:
+خانه 24 = 2
+خانه 13 = 5
+خانه 8 = 3
+خانه 6 = 5
 */
 
-points[0] = [
-"white",
-"white"
-];
 
-points[11] = [
-"white",
-"white",
-"white",
-"white",
-"white"
-];
+function newGame() {
 
-points[16] = [
-"white",
-"white",
-"white"
-];
+    points = Array(24).fill(null).map(() => []);
 
-points[18] = [
-"white",
-"white",
-"white",
-"white",
-"white"
-];
+    points[0] = ["white","white"];
 
+    points[11] = [
+        "white","white","white","white","white"
+    ];
 
-/*
-مهره‌های سیاه
-*/
+    points[16] = [
+        "white","white","white"
+    ];
 
-points[23] = [
-"black",
-"black"
-];
+    points[18] = [
+        "white","white","white","white","white"
+    ];
 
-points[12] = [
-"black",
-"black",
-"black",
-"black",
-"black"
-];
+    points[23] = ["black","black"];
 
-points[7] = [
-"black",
-"black",
-"black"
-];
+    points[12] = [
+        "black","black","black","black","black"
+    ];
 
-points[5] = [
-"black",
-"black",
-"black",
-"black",
-"black"
-];
+    points[7] = [
+        "black","black","black"
+    ];
 
-}
+    points[5] = [
+        "black","black","black","black","black"
+    ];
 
+    currentPlayer = "white";
 
-function createBoard() {
+    dice = [];
 
-const oldPoints =
-document.querySelectorAll(".point");
+    selectedPoint = null;
 
-oldPoints.forEach(function(point) {
+    offWhite = 0;
 
-point.remove();
+    offBlack = 0;
 
-});
+    barWhite = 0;
 
+    barBlack = 0;
 
-/*
-خانه‌های بالایی
-*/
+    rolled = false;
 
-for(let i = 23; i >= 12; i--) {
+    die1.textContent = "-";
 
-createPoint(i, "top");
+    die2.textContent = "-";
+
+    message.textContent =
+        "برای شروع، روی «انداختن تاس» بزنید.";
+
+    render();
 
 }
 
 
-/*
-خانه‌های پایینی
-*/
+function createPoint(index) {
 
-for(let i = 0; i < 12; i++) {
+    const point =
+        document.createElement("div");
 
-createPoint(i, "bottom");
+    point.className =
+        "point " +
+        (index < 12 ? "top" : "bottom");
+
+    point.dataset.index = index;
+
+    const triangle =
+        document.createElement("div");
+
+    triangle.className =
+        "triangle";
+
+    point.appendChild(triangle);
+
+    const stack =
+        document.createElement("div");
+
+    stack.className =
+        "stack";
+
+    const pieces =
+        points[index];
+
+    pieces.forEach((color, pieceIndex) => {
+
+        const checker =
+            document.createElement("div");
+
+        checker.className =
+            "checker " + color;
+
+        if (
+            selectedPoint === index &&
+            pieceIndex === pieces.length - 1
+        ) {
+
+            checker.classList.add("selected");
+
+        }
+
+        checker.addEventListener(
+            "click",
+            function(event) {
+
+                event.stopPropagation();
+
+                selectPoint(index);
+
+            }
+        );
+
+        stack.appendChild(checker);
+
+    });
+
+    point.appendChild(stack);
+
+    if (pieces.length > 1) {
+
+        const count =
+            document.createElement("div");
+
+        count.className =
+            "count";
+
+        count.textContent =
+            pieces.length;
+
+        point.appendChild(count);
+
+    }
+
+    const number =
+        document.createElement("div");
+
+    number.className =
+        "point-number";
+
+    number.textContent =
+        index + 1;
+
+    point.appendChild(number);
+
+    point.addEventListener(
+        "click",
+        function() {
+
+            handleDestination(index);
+
+        }
+    );
+
+    return point;
 
 }
 
 
-renderBoard();
+function render() {
+
+    const oldPoints =
+        board.querySelectorAll(".point");
+
+    oldPoints.forEach(
+        p => p.remove()
+    );
+
+    for (
+        let i = 0;
+        i < 24;
+        i++
+    ) {
+
+        const point =
+            createPoint(i);
+
+        board.appendChild(point);
+
+    }
+
+    renderBar();
+
+    renderOffBoard();
+
+    turnText.textContent =
+        currentPlayer === "white"
+        ? "نوبت: ⚪ سفید"
+        : "نوبت: ⚫ سیاه";
 
 }
 
 
-function createPoint(index, position) {
+function renderBar() {
 
-const point =
-document.createElement("div");
+    const white =
+        document.getElementById("barWhite");
 
-point.className =
-"point " + position;
+    const black =
+        document.getElementById("barBlack");
 
-point.dataset.index =
-index;
+    white.innerHTML = "";
 
+    black.innerHTML = "";
 
-const number =
-document.createElement("div");
+    for (
+        let i = 0;
+        i < barWhite;
+        i++
+    ) {
 
-number.className =
-"point-number";
+        const piece =
+            document.createElement("div");
 
-number.textContent =
-index + 1;
+        piece.className =
+            "bar-piece white";
 
+        white.appendChild(piece);
 
-const checkers =
-document.createElement("div");
+    }
 
-checkers.className =
-"checkers";
+    for (
+        let i = 0;
+        i < barBlack;
+        i++
+    ) {
 
+        const piece =
+            document.createElement("div");
 
-point.appendChild(number);
+        piece.className =
+            "bar-piece black";
 
-point.appendChild(checkers);
+        black.appendChild(piece);
 
-
-point.addEventListener(
-"click",
-function() {
-
-handlePointClick(index);
-
-}
-);
-
-
-board.appendChild(point);
+    }
 
 }
 
 
-function renderBoard() {
+function renderOffBoard() {
 
-for(let i = 0; i < 24; i++) {
+    const white =
+        document.getElementById("offWhite");
 
-const point =
-document.querySelector(
-'.point[data-index="' + i + '"]'
-);
+    const black =
+        document.getElementById("offBlack");
 
-if(!point) continue;
+    white.innerHTML = "";
 
+    black.innerHTML = "";
 
-const checkers =
-point.querySelector(
-".checkers"
-);
+    for (
+        let i = 0;
+        i < offWhite;
+        i++
+    ) {
 
+        const p =
+            document.createElement("div");
 
-checkers.innerHTML = "";
+        p.className =
+            "off-piece white";
 
+        white.appendChild(p);
 
-points[i].forEach(function(color) {
+    }
 
-const checker =
-document.createElement("div");
+    for (
+        let i = 0;
+        i < offBlack;
+        i++
+    ) {
 
-checker.className =
-"checker " + color;
+        const p =
+            document.createElement("div");
 
+        p.className =
+            "off-piece black";
 
-checkers.appendChild(checker);
+        black.appendChild(p);
 
-});
-
-}
+    }
 
 }
 
 
 function rollDice() {
 
-if(dice.length > 0) {
+    if (rolled) {
 
-gameMessage.textContent =
-"ابتدا مهره‌های خود را حرکت بده.";
+        message.textContent =
+            "ابتدا حرکت‌های این نوبت را انجام دهید.";
 
-return;
+        return;
 
-}
+    }
 
+    const a =
+        Math.floor(
+            Math.random() * 6
+        ) + 1;
 
-const d1 =
-Math.floor(
-Math.random() * 6
-) + 1;
+    const b =
+        Math.floor(
+            Math.random() * 6
+        ) + 1;
 
+    dice = [a,b];
 
-const d2 =
-Math.floor(
-Math.random() * 6
-) + 1;
+    if (a === b) {
 
+        dice = [
+            a,a,a,a
+        ];
 
-if(d1 === d2) {
+    }
 
-dice = [
-d1,
-d1,
-d1,
-d1
-];
+    die1.textContent = a;
 
-} else {
+    die2.textContent = b;
 
-dice = [
-d1,
-d2
-];
+    rolled = true;
 
-}
+    selectedPoint = null;
 
-
-diceText.textContent =
-"🎲 تاس: " +
-d1 +
-" - " +
-d2;
-
-
-gameMessage.textContent =
-"یک مهره " +
-(currentPlayer === "white" ?
-"سفید" :
-"سیاه") +
-" را انتخاب کن.";
-
+    message.textContent =
+        "تاس ریخته شد. مهره خود را انتخاب کنید.";
 
 }
 
 
-function handlePointClick(index) {
+function selectPoint(index) {
 
+    if (!rolled) {
 
-/*
-اگر مهره انتخاب نشده
-*/
+        message.textContent =
+            "ابتدا تاس بیندازید.";
 
-if(selectedPoint === null) {
+        return;
 
+    }
 
-if(points[index].length === 0) {
+    const pieces =
+        points[index];
 
-gameMessage.textContent =
-"❌ این خانه مهره ندارد.";
+    if (
+        pieces.length === 0
+    ) {
 
-return;
+        message.textContent =
+            "این خانه خالی است.";
 
-}
+        return;
 
+    }
 
-const color =
-points[index][0];
+    const color =
+        pieces[pieces.length - 1];
 
+    if (
+        color !== currentPlayer
+    ) {
 
-if(color !== currentPlayer) {
+        message.textContent =
+            "❌ این مهره متعلق به شما نیست.";
 
-gameMessage.textContent =
-"❌ این مهره متعلق به بازیکن دیگر است.";
+        return;
 
-return;
+    }
 
-}
+    if (
+        currentPlayer === "white" &&
+        barWhite > 0
+    ) {
 
+        message.textContent =
+            "⚠️ ابتدا باید مهره سفید روی بار را وارد کنید.";
 
-if(dice.length === 0) {
+        return;
 
-gameMessage.textContent =
-"🎲 ابتدا تاس بینداز.";
+    }
 
-return;
+    if (
+        currentPlayer === "black" &&
+        barBlack > 0
+    ) {
 
-}
+        message.textContent =
+            "⚠️ ابتدا باید مهره سیاه روی بار را وارد کنید.";
 
+        return;
 
-selectedPoint =
-index;
+    }
 
+    selectedPoint = index;
 
-gameMessage.textContent =
-"✅ مهره انتخاب شد. حالا خانه مقصد را انتخاب کن.";
+    message.textContent =
+        "حالا خانه مقصد را انتخاب کنید.";
 
-return;
-
-}
-
-
-/*
-انتخاب مقصد
-*/
-
-const from =
-selectedPoint;
-
-const to =
-index;
-
-
-if(from === to) {
-
-selectedPoint = null;
-
-gameMessage.textContent =
-"انتخاب لغو شد.";
-
-return;
+    render();
 
 }
 
 
-const distance =
-Math.abs(
-to - from
-);
+function handleDestination(destination) {
 
+    if (
+        selectedPoint === null
+    ) {
 
-/*
-بررسی عدد تاس
-*/
+        return;
 
-const diceIndex =
-dice.indexOf(distance);
+    }
 
+    if (
+        !rolled
+    ) {
 
-if(diceIndex === -1) {
+        return;
 
-gameMessage.textContent =
-"❌ حرکت با عدد تاس شما هماهنگ نیست.";
+    }
 
-return;
+    const distance =
+        getDistance(
+            selectedPoint,
+            destination,
+            currentPlayer
+        );
+
+    if (
+        !dice.includes(distance)
+    ) {
+
+        message.textContent =
+            "❌ حرکت با این تاس ممکن نیست.";
+
+        return;
+
+    }
+
+    if (
+        !isValidDestination(
+            destination,
+            currentPlayer
+        )
+    ) {
+
+        message.textContent =
+            "❌ این خانه برای حرکت شما بسته است.";
+
+        return;
+
+    }
+
+    movePiece(
+        selectedPoint,
+        destination,
+        distance
+    );
 
 }
 
 
-/*
-بررسی جهت حرکت
-*/
-
-if(currentPlayer === "white" &&
-to <= from) {
-
-gameMessage.textContent =
-"❌ بازیکن سفید باید به سمت خانه‌های بالاتر حرکت کند.";
-
-return;
-
-}
-
-
-if(currentPlayer === "black" &&
-to >= from) {
-
-gameMessage.textContent =
-"❌ بازیکن سیاه باید به سمت خانه‌های پایین‌تر حرکت کند.";
-
-return;
-
-}
-
-
-/*
-بررسی مهره مقصد
-*/
-
-if(
-points[to].length > 1 &&
-points[to][0] !== currentPlayer
+function getDistance(
+    from,
+    to,
+    color
 ) {
 
-gameMessage.textContent =
-"❌ این خانه توسط دو مهره حریف بسته شده است.";
+    if (
+        color === "white"
+    ) {
 
-return;
+        if (
+            to <= from
+        ) return -1;
+
+        return to - from;
+
+    } else {
+
+        if (
+            to >= from
+        ) return -1;
+
+        return from - to;
+
+    }
 
 }
 
 
-/*
-زدن تک مهره حریف
-*/
-
-if(
-points[to].length === 1 &&
-points[to][0] !== currentPlayer
+function isValidDestination(
+    index,
+    color
 ) {
 
-points[to] = [];
+    const pieces =
+        points[index];
 
-gameMessage.textContent =
-"💥 مهره حریف زده شد!";
+    if (
+        pieces.length === 0
+    ) {
 
-}
+        return true;
 
+    }
 
-/*
-برداشتن مهره
-*/
+    const opponent =
+        color === "white"
+        ? "black"
+        : "white";
 
-points[from].pop();
+    const opponents =
+        pieces.filter(
+            p => p === opponent
+        ).length;
 
+    if (
+        opponents >= 2
+    ) {
 
-/*
-قرار دادن مهره
-*/
+        return false;
 
-points[to].push(
-currentPlayer
-);
+    }
 
-
-/*
-حذف تاس استفاده شده
-*/
-
-dice.splice(
-diceIndex,
-1
-);
-
-
-selectedPoint =
-null;
-
-
-renderBoard();
-
-
-/*
-بررسی برد
-*/
-
-let remaining =
-0;
-
-for(let i = 0; i < 24; i++) {
-
-remaining +=
-points[i].filter(
-x => x === currentPlayer
-).length;
+    return true;
 
 }
 
 
-if(remaining === 0) {
+function movePiece(
+    from,
+    to,
+    distance
+) {
 
-gameMessage.textContent =
-"🏆 بازیکن " +
-(currentPlayer === "white" ?
-"سفید" :
-"سیاه") +
-" برنده شد!";
+    const moving =
+        points[from].pop();
 
-dice = [];
+    const destination =
+        points[to];
 
-return;
+    const opponent =
+        currentPlayer === "white"
+        ? "black"
+        : "white";
+
+    if (
+        destination.length === 1 &&
+        destination[0] === opponent
+    ) {
+
+        destination.pop();
+
+        if (
+            opponent === "white"
+        ) {
+
+            barWhite++;
+
+        } else {
+
+            barBlack++;
+
+        }
+
+        message.textContent =
+            "💥 مهره حریف زده شد!";
+
+    }
+
+    destination.push(moving);
+
+    const index =
+        dice.indexOf(distance);
+
+    if (
+        index !== -1
+    ) {
+
+        dice.splice(
+            index,
+            1
+        );
+
+    }
+
+    selectedPoint = null;
+
+    if (
+        dice.length === 0
+    ) {
+
+        changeTurn();
+
+    } else {
+
+        message.textContent =
+            "حرکت بعدی را انجام دهید.";
+
+        render();
+
+    }
+
+}
+
+
+function changeTurn() {
+
+    currentPlayer =
+        currentPlayer === "white"
+        ? "black"
+        : "white";
+
+    dice = [];
+
+    rolled = false;
+
+    selectedPoint = null;
+
+    die1.textContent = "-";
+
+    die2.textContent = "-";
+
+    message.textContent =
+        currentPlayer === "white"
+        ? "نوبت سفید است. تاس بیندازید."
+        : "نوبت سیاه است. تاس بیندازید.";
+
+    render();
 
 }
 
 
-/*
-اگر تاس تمام شد
-*/
-
-if(dice.length === 0) {
-
-currentPlayer =
-currentPlayer === "white" ?
-"black" :
-"white";
-
-
-turnText.textContent =
-"نوبت بازیکن " +
-(currentPlayer === "white" ?
-"سفید ⚪" :
-"سیاه ⚫");
-
-
-diceText.textContent =
-"برای ادامه تاس بیندازید.";
-
-gameMessage.textContent =
-"🎲 نوبت بازیکن بعدی است.";
-
-}
-
-}
-
-
-diceBtn.addEventListener(
-"click",
-rollDice
-);
-
-
-resetBtn.addEventListener(
-"click",
-function() {
-
-currentPlayer =
-"white";
-
-dice =
-[];
-
-selectedPoint =
-null;
-
-createInitialBoard();
-
-createBoard();
-
-turnText.textContent =
-"نوبت بازیکن سفید ⚪";
-
-diceText.textContent =
-"برای شروع تاس بیندازید";
-
-gameMessage.textContent =
-"بازی جدید شروع شد.";
-
-}
-);
-
-
-backBtn.addEventListener(
-"click",
-function() {
-
-gamePage.classList.add(
-"hidden"
-);
-
-home.classList.remove(
-"hidden"
-);
-
-}
+rollBtn.addEventListener(
+    "click",
+    rollDice
 );
 
 
 document
-.getElementById("offlineBtn")
+.getElementById("newBtn")
 .addEventListener(
-"click",
-function() {
-
-home.classList.add(
-"hidden"
-);
-
-gamePage.classList.remove(
-"hidden"
-);
-
-createInitialBoard();
-
-createBoard();
-
-}
+    "click",
+    newGame
 );
 
 
-/*
-شروع اولیه
-*/
+document
+.getElementById("menuBtn")
+.addEventListener(
+    "click",
+    function() {
 
-createInitialBoard();
+        window.location.href =
+            "index.html";
+
+    }
+);
+
+
+newGame();
 
 </script>
 
