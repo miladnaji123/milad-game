@@ -5,9 +5,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>میلاد گیم</title>
+<title>میلاد گیم | تخته نرد</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -16,20 +17,21 @@ body {
     margin: 0;
     min-height: 100vh;
     font-family: Tahoma, Arial, sans-serif;
-    background: linear-gradient(135deg, #1b0b04, #6b3518, #2b1207);
+    background:
+        radial-gradient(circle at top, #8b542d, #3b1d0d 50%, #170b05);
     color: white;
 }
 
 .container {
-    width: 92%;
-    max-width: 600px;
+    width: 96%;
+    max-width: 900px;
     margin: auto;
-    padding: 30px 0;
+    padding: 20px 0 40px;
 }
 
 .logo {
     text-align: center;
-    font-size: 65px;
+    font-size: 55px;
 }
 
 h1 {
@@ -41,28 +43,26 @@ h1 {
 .subtitle {
     text-align: center;
     color: #f1d0a0;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .page {
-    background: #351b0d;
+    background: rgba(45, 22, 10, .97);
     border: 2px solid #a56832;
     border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 10px 30px #000;
+    padding: 18px;
+    box-shadow: 0 10px 35px rgba(0,0,0,.7);
 }
 
-.page h2 {
-    text-align: center;
-    color: #ffd98a;
+.hidden {
+    display: none !important;
 }
 
 button {
-    display: block;
     width: 100%;
-    padding: 16px;
-    margin: 10px 0;
-    border: none;
+    padding: 15px;
+    margin: 7px 0;
+    border: 0;
     border-radius: 12px;
     color: white;
     font-family: Tahoma;
@@ -75,123 +75,235 @@ button:active {
     transform: scale(.97);
 }
 
-button:disabled {
-    opacity: .5;
-    cursor: not-allowed;
-}
-
 .btn-offline {
     background: #a86228;
-}
-
-.btn-online {
-    background: #16866d;
-}
-
-.btn-join {
-    background: #7650a5;
-}
-
-.btn-chat {
-    background: #963f68;
 }
 
 .btn-back {
     background: #555;
 }
 
-.hidden {
-    display: none !important;
+.btn-dice {
+    background: #16866d;
 }
 
-.status {
+.btn-reset {
+    background: #7650a5;
+}
+
+#home h2,
+#gamePage h2 {
     text-align: center;
-    padding: 10px;
-    border-radius: 10px;
-    background: #160b05;
-    margin-bottom: 15px;
     color: #ffd98a;
 }
 
-.room-code {
+.info {
     text-align: center;
-    background: #160b05;
-    border: 2px dashed #e0a75c;
+    background: #241107;
     border-radius: 12px;
-    padding: 20px;
-    margin: 20px 0;
-    font-size: 35px;
-    font-weight: bold;
-    color: #ffe19b;
-    direction: ltr;
-    letter-spacing: 6px;
+    padding: 12px;
+    margin-bottom: 15px;
 }
 
-input {
-    display: block;
+#turnText {
+    color: #ffe19b;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+#diceText {
+    font-size: 24px;
+    margin-top: 8px;
+}
+
+/* تخته */
+
+.board-wrapper {
     width: 100%;
-    padding: 15px;
-    margin: 12px 0;
-    background: #160b05;
-    color: white;
-    border: 2px solid #9a5b2d;
+    overflow-x: auto;
+    padding: 5px;
+}
+
+.board {
+    min-width: 620px;
+    height: 390px;
+    background: #7b421e;
+    border: 12px solid #3a1b0b;
+    border-radius: 12px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 5px;
+    padding: 10px;
+    position: relative;
+    box-shadow:
+        inset 0 0 20px rgba(0,0,0,.7),
+        0 8px 20px rgba(0,0,0,.6);
+}
+
+.point {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+    min-width: 35px;
+}
+
+.point::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 22px solid transparent;
+    border-right: 22px solid transparent;
+    border-top: 160px solid #d9a05d;
+    position: absolute;
+    top: 0;
+}
+
+.point:nth-child(even)::before {
+    border-top-color: #4b2410;
+}
+
+.point.bottom {
+    justify-content: flex-end;
+}
+
+.point.bottom::before {
+    top: auto;
+    bottom: 0;
+    border-top: none;
+    border-bottom: 160px solid #d9a05d;
+}
+
+.point.bottom:nth-child(even)::before {
+    border-bottom-color: #4b2410;
+}
+
+.point.selected {
+    background: rgba(255,215,80,.25);
+    border-radius: 8px;
+}
+
+.point-number {
+    position: absolute;
+    z-index: 3;
+    font-size: 11px;
+    color: #ffe7b0;
+}
+
+.bottom .point-number {
+    bottom: 2px;
+}
+
+.top .point-number {
+    top: 2px;
+}
+
+.checkers {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bottom .checkers {
+    flex-direction: column-reverse;
+}
+
+.checker {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin: -3px 0;
+    border: 2px solid #111;
+    box-shadow: 0 3px 5px rgba(0,0,0,.6);
+    cursor: pointer;
+}
+
+.checker.white {
+    background:
+        radial-gradient(circle at 35% 30%, #fff, #ddd 45%, #999);
+}
+
+.checker.black {
+    background:
+        radial-gradient(circle at 35% 30%, #555, #111 55%, #000);
+}
+
+.bar {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 65px;
+    height: 55px;
+    background: #2b1207;
     border-radius: 10px;
-    font-family: Tahoma;
-    font-size: 18px;
-    text-align: center;
-    outline: none;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.bar .checker {
+    margin: 0;
+    width: 28px;
+    height: 28px;
+}
+
+.controls {
+    margin-top: 15px;
 }
 
 .message {
     text-align: center;
     color: #ffd98a;
-    line-height: 2;
-    margin-top: 15px;
+    min-height: 25px;
+    line-height: 1.8;
 }
 
-.players {
-    text-align: center;
+.rules {
     background: #241107;
     padding: 12px;
-    border-radius: 10px;
-    margin: 15px 0;
-}
-
-.chat-box {
-    height: 250px;
-    overflow-y: auto;
-    background: #160b05;
     border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 10px;
-}
-
-.chat-message {
-    background: #68401f;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    text-align: right;
-}
-
-.dice-area {
-    text-align: center;
-    background: #241107;
-    border-radius: 15px;
-    padding: 15px;
-    margin: 15px 0;
-}
-
-.dice {
-    font-size: 45px;
-    margin: 10px;
+    margin-top: 15px;
+    line-height: 2;
+    font-size: 14px;
 }
 
 .footer {
     text-align: center;
     color: #c9a77c;
-    margin-top: 25px;
+    margin-top: 20px;
 }
+
+@media(max-width:700px) {
+
+    .board {
+        min-width: 570px;
+        height: 350px;
+    }
+
+    .point::before {
+        border-left-width: 19px;
+        border-right-width: 19px;
+        border-top-width: 140px;
+    }
+
+    .point.bottom::before {
+        border-bottom-width: 140px;
+    }
+
+    .checker {
+        width: 31px;
+        height: 31px;
+    }
+
+}
+
 </style>
 </head>
 
@@ -207,705 +319,768 @@ input {
 بازی تخته نرد آنلاین و آفلاین با دوستان
 </div>
 
-<div id="connectionStatus" class="status">
-🔄 در حال اتصال به سرور...
-</div>
 
+<!-- صفحه اصلی -->
 
 <div id="home" class="page">
 
 <h2>🎮 انتخاب نوع بازی</h2>
 
 <button id="offlineBtn" class="btn-offline">
-🎲 بازی آفلاین دو نفره
-</button>
-
-<button id="createBtn" class="btn-online">
-🌐 ساخت اتاق آنلاین
-</button>
-
-<button id="joinBtn" class="btn-join">
-🔑 ورود به اتاق دوست
-</button>
-
-<button id="chatBtn" class="btn-chat">
-💬 چت فارسی
+🎲 شروع بازی آفلاین دو نفره
 </button>
 
 </div>
 
 
-<div id="createPage" class="page hidden">
+<!-- صفحه بازی -->
 
-<h2>🏠 اتاق آنلاین</h2>
+<div id="gamePage" class="page hidden">
 
-<p class="message">
-کد اتاق شما:
-</p>
+<h2>🎲 تخته نرد آفلاین</h2>
 
-<div id="roomCode" class="room-code">
-------
+<div class="info">
+
+<div id="turnText">
+نوبت بازیکن سفید
 </div>
 
-<div id="players" class="players">
-👥 بازیکنان: 0 / 2
+<div id="diceText">
+برای شروع تاس بیندازید
 </div>
 
-<button id="copyBtn" class="btn-online">
-📋 کپی کد اتاق
-</button>
+</div>
 
-<button id="inviteBtn" class="btn-join">
-📤 دعوت از دوست
-</button>
 
-<button id="startOnlineBtn" class="btn-online">
+<div class="board-wrapper">
+
+<div id="board" class="board">
+
+<!-- خانه‌ها با جاوااسکریپت ساخته می‌شوند -->
+
+<div class="bar">
+
+<div id="barWhite"></div>
+<div id="barBlack"></div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="controls">
+
+<button id="diceBtn" class="btn-dice">
 🎲 انداختن تاس
 </button>
 
-<div class="dice-area">
-
-<div>
-تاس شما
-</div>
-
-<div id="myDice" class="dice">
-🎲 🎲
-</div>
-
-<div>
-آخرین نتیجه
-</div>
-
-<div id="lastDice" class="dice">
--
-</div>
-
-</div>
-
-<h3>💬 چت اتاق</h3>
-
-<div id="roomChatBox" class="chat-box"></div>
-
-<input
-id="roomChatInput"
-type="text"
-placeholder="پیام خود را بنویس...">
-
-<button id="roomSendChatBtn" class="btn-chat">
-📤 ارسال پیام
+<button id="resetBtn" class="btn-reset">
+🔄 شروع بازی جدید
 </button>
 
-<button class="btn-back backBtn">
-↩️ بازگشت
+<button id="backBtn" class="btn-back">
+↩️ بازگشت به صفحه اصلی
 </button>
-
-<div id="createMessage" class="message"></div>
 
 </div>
 
 
-<div id="joinPage" class="page hidden">
-
-<h2>🔑 ورود به اتاق دوست</h2>
-
-<p class="message">
-کد ۶ رقمی اتاق را وارد کن:
-</p>
-
-<input
-id="joinInput"
-type="text"
-maxlength="6"
-inputmode="numeric"
-placeholder="مثلاً 123456">
-
-<button id="joinRoomBtn" class="btn-online">
-🚪 ورود به اتاق
-</button>
-
-<button class="btn-back backBtn">
-↩️ بازگشت
-</button>
-
-<div id="joinMessage" class="message"></div>
-
+<div id="gameMessage" class="message">
+ابتدا تاس بیندازید.
 </div>
 
 
-<div id="chatPage" class="page hidden">
+<div class="rules">
 
-<h2>💬 چت فارسی</h2>
+<b>راهنمای بازی:</b>
 
-<div id="chatBox" class="chat-box">
+<br>
 
-<div class="chat-message">
-🤖 سیستم: به میلاد گیم خوش آمدید.
+۱. ابتدا روی «انداختن تاس» بزنید.
+
+<br>
+
+۲. روی مهره خود کلیک کنید.
+
+<br>
+
+۳. سپس روی خانه مقصد کلیک کنید.
+
+<br>
+
+۴. در این نسخه، بازی برای دو نفر روی یک گوشی است.
+
+<br>
+
+۵. قوانین کامل حرکت و برد در مراحل بعدی کامل‌تر می‌شود.
+
 </div>
-
-</div>
-
-<input
-id="chatInput"
-type="text"
-placeholder="پیام خود را بنویس...">
-
-<button id="sendChatBtn" class="btn-chat">
-📤 ارسال پیام
-</button>
-
-<button class="btn-back backBtn">
-↩️ بازگشت
-</button>
 
 </div>
 
 
 <div class="footer">
+
 🎲 میلاد گیم
 <br>
-نسخه آزمایشی آنلاین
-</div>
+نسخه آفلاین آزمایشی
 
 </div>
 
-
-<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+</div>
 
 
 <script>
 
-document.addEventListener("DOMContentLoaded", function() {
-
-const SERVER_URL =
-"https://milad-game-server.onrender.com";
-
-const socket =
-io(SERVER_URL);
-
-let currentRoom = null;
-
-
 const home =
 document.getElementById("home");
 
-const createPage =
-document.getElementById("createPage");
+const gamePage =
+document.getElementById("gamePage");
 
-const joinPage =
-document.getElementById("joinPage");
+const board =
+document.getElementById("board");
 
-const chatPage =
-document.getElementById("chatPage");
+const turnText =
+document.getElementById("turnText");
 
-const connectionStatus =
-document.getElementById("connectionStatus");
+const diceText =
+document.getElementById("diceText");
+
+const gameMessage =
+document.getElementById("gameMessage");
+
+const diceBtn =
+document.getElementById("diceBtn");
+
+const resetBtn =
+document.getElementById("resetBtn");
+
+const backBtn =
+document.getElementById("backBtn");
 
 
-function showPage(page) {
+let currentPlayer = "white";
 
-home.classList.add("hidden");
-createPage.classList.add("hidden");
-joinPage.classList.add("hidden");
-chatPage.classList.add("hidden");
+let dice = [];
 
-page.classList.remove("hidden");
+let selectedPoint = null;
 
-window.scrollTo(0, 0);
+
+/*
+ساخت وضعیت اولیه تخته
+شماره خانه‌ها:
+0 تا 23
+*/
+
+let points = [];
+
+
+function createInitialBoard() {
+
+points = [];
+
+for(let i = 0; i < 24; i++) {
+
+points.push([]);
 
 }
 
 
-function goHome() {
+/*
+مهره‌های سفید
+*/
 
-showPage(home);
+points[0] = [
+"white",
+"white"
+];
+
+points[11] = [
+"white",
+"white",
+"white",
+"white",
+"white"
+];
+
+points[16] = [
+"white",
+"white",
+"white"
+];
+
+points[18] = [
+"white",
+"white",
+"white",
+"white",
+"white"
+];
+
+
+/*
+مهره‌های سیاه
+*/
+
+points[23] = [
+"black",
+"black"
+];
+
+points[12] = [
+"black",
+"black",
+"black",
+"black",
+"black"
+];
+
+points[7] = [
+"black",
+"black",
+"black"
+];
+
+points[5] = [
+"black",
+"black",
+"black",
+"black",
+"black"
+];
 
 }
 
 
-socket.on("connect", function() {
+function createBoard() {
 
-connectionStatus.textContent =
-"🟢 اتصال به سرور برقرار است";
+const oldPoints =
+document.querySelectorAll(".point");
 
-connectionStatus.style.color =
-"#7dffb2";
+oldPoints.forEach(function(point) {
 
-});
-
-
-socket.on("disconnect", function() {
-
-connectionStatus.textContent =
-"🔴 اتصال به سرور قطع شد";
-
-connectionStatus.style.color =
-"#ff8a8a";
+point.remove();
 
 });
 
 
-socket.on("connect_error", function() {
+/*
+خانه‌های بالایی
+*/
 
-connectionStatus.textContent =
-"🟠 اتصال به سرور در حال تلاش مجدد است";
+for(let i = 23; i >= 12; i--) {
 
-});
+createPoint(i, "top");
+
+}
 
 
-document
-.getElementById("createBtn")
-.addEventListener("click", function() {
+/*
+خانه‌های پایینی
+*/
 
-if (!socket.connected) {
+for(let i = 0; i < 12; i++) {
 
-alert(
-"سرور هنوز آماده نیست. چند ثانیه صبر کن."
+createPoint(i, "bottom");
+
+}
+
+
+renderBoard();
+
+}
+
+
+function createPoint(index, position) {
+
+const point =
+document.createElement("div");
+
+point.className =
+"point " + position;
+
+point.dataset.index =
+index;
+
+
+const number =
+document.createElement("div");
+
+number.className =
+"point-number";
+
+number.textContent =
+index + 1;
+
+
+const checkers =
+document.createElement("div");
+
+checkers.className =
+"checkers";
+
+
+point.appendChild(number);
+
+point.appendChild(checkers);
+
+
+point.addEventListener(
+"click",
+function() {
+
+handlePointClick(index);
+
+}
 );
 
-return;
 
-}
-
-socket.emit("createRoom");
-
-showPage(createPage);
-
-});
-
-
-socket.on("roomCreated", function(code) {
-
-currentRoom = code;
-
-document
-.getElementById("roomCode")
-.textContent = code;
-
-document
-.getElementById("createMessage")
-.textContent =
-"✅ اتاق ساخته شد. کد را برای دوستت بفرست.";
-
-updatePlayers(1);
-
-});
-
-
-document
-.getElementById("joinBtn")
-.addEventListener("click", function() {
-
-showPage(joinPage);
-
-});
-
-
-document
-.getElementById("joinRoomBtn")
-.addEventListener("click", function() {
-
-const code =
-document
-.getElementById("joinInput")
-.value
-.trim();
-
-const message =
-document
-.getElementById("joinMessage");
-
-
-if (!/^[0-9]{6}$/.test(code)) {
-
-message.textContent =
-"❌ لطفاً یک کد ۶ رقمی وارد کن.";
-
-return;
+board.appendChild(point);
 
 }
 
 
-if (!socket.connected) {
+function renderBoard() {
 
-message.textContent =
-"❌ اتصال به سرور برقرار نیست.";
+for(let i = 0; i < 24; i++) {
 
-return;
-
-}
-
-
-socket.emit(
-"joinRoom",
-code
+const point =
+document.querySelector(
+'.point[data-index="' + i + '"]'
 );
 
-message.textContent =
-"🔄 در حال ورود به اتاق...";
-
-});
+if(!point) continue;
 
 
-socket.on("roomJoined", function(code) {
-
-currentRoom = code;
-
-document
-.getElementById("roomCode")
-.textContent = code;
-
-document
-.getElementById("createMessage")
-.textContent =
-"✅ با موفقیت وارد اتاق شدی.";
-
-showPage(createPage);
-
-});
-
-
-socket.on("roomError", function(error) {
-
-document
-.getElementById("joinMessage")
-.textContent =
-"❌ " + error;
-
-});
-
-
-function updatePlayers(count) {
-
-document
-.getElementById("players")
-.textContent =
-"👥 بازیکنان: " +
-count +
-" / 2";
-
-}
-
-
-socket.on("playerJoined", function(data) {
-
-updatePlayers(data.players);
-
-addRoomMessage(
-"🤖 سیستم: یک بازیکن وارد اتاق شد."
+const checkers =
+point.querySelector(
+".checkers"
 );
 
+
+checkers.innerHTML = "";
+
+
+points[i].forEach(function(color) {
+
+const checker =
+document.createElement("div");
+
+checker.className =
+"checker " + color;
+
+
+checkers.appendChild(checker);
+
 });
 
-
-document
-.getElementById("copyBtn")
-.addEventListener("click", function() {
-
-if (!currentRoom) {
-return;
 }
 
-navigator.clipboard
-.writeText(currentRoom)
-.then(function() {
-
-document
-.getElementById("createMessage")
-.textContent =
-"✅ کد اتاق کپی شد.";
-
-});
-
-});
-
-
-document
-.getElementById("inviteBtn")
-.addEventListener("click", function() {
-
-if (!currentRoom) {
-return;
 }
 
-const inviteText =
-"🎲 بیا با هم در میلاد گیم تخته نرد بازی کنیم!\n" +
-"🔑 کد اتاق: " +
-currentRoom +
-"\n" +
-"🌐 لینک بازی:\n" +
-window.location.href;
+
+function rollDice() {
+
+if(dice.length > 0) {
+
+gameMessage.textContent =
+"ابتدا مهره‌های خود را حرکت بده.";
+
+return;
+
+}
 
 
-if (navigator.share) {
+const d1 =
+Math.floor(
+Math.random() * 6
+) + 1;
 
-navigator.share({
 
-title:
-"دعوت به میلاد گیم",
+const d2 =
+Math.floor(
+Math.random() * 6
+) + 1;
 
-text:
-inviteText
 
-});
+if(d1 === d2) {
+
+dice = [
+d1,
+d1,
+d1,
+d1
+];
 
 } else {
 
-navigator.clipboard
-.writeText(inviteText)
-.then(function() {
-
-alert(
-"✅ متن دعوت کپی شد."
-);
-
-});
+dice = [
+d1,
+d2
+];
 
 }
 
-});
+
+diceText.textContent =
+"🎲 تاس: " +
+d1 +
+" - " +
+d2;
 
 
-document
-.getElementById("startOnlineBtn")
-.addEventListener("click", function() {
+gameMessage.textContent =
+"یک مهره " +
+(currentPlayer === "white" ?
+"سفید" :
+"سیاه") +
+" را انتخاب کن.";
 
-if (!currentRoom) {
 
-alert(
-"اول وارد یک اتاق شو."
-);
+}
+
+
+function handlePointClick(index) {
+
+
+/*
+اگر مهره انتخاب نشده
+*/
+
+if(selectedPoint === null) {
+
+
+if(points[index].length === 0) {
+
+gameMessage.textContent =
+"❌ این خانه مهره ندارد.";
 
 return;
 
 }
 
-socket.emit(
-"diceRoll",
-{
-roomCode:
-currentRoom
+
+const color =
+points[index][0];
+
+
+if(color !== currentPlayer) {
+
+gameMessage.textContent =
+"❌ این مهره متعلق به بازیکن دیگر است.";
+
+return;
+
 }
+
+
+if(dice.length === 0) {
+
+gameMessage.textContent =
+"🎲 ابتدا تاس بینداز.";
+
+return;
+
+}
+
+
+selectedPoint =
+index;
+
+
+gameMessage.textContent =
+"✅ مهره انتخاب شد. حالا خانه مقصد را انتخاب کن.";
+
+return;
+
+}
+
+
+/*
+انتخاب مقصد
+*/
+
+const from =
+selectedPoint;
+
+const to =
+index;
+
+
+if(from === to) {
+
+selectedPoint = null;
+
+gameMessage.textContent =
+"انتخاب لغو شد.";
+
+return;
+
+}
+
+
+const distance =
+Math.abs(
+to - from
 );
 
-});
+
+/*
+بررسی عدد تاس
+*/
+
+const diceIndex =
+dice.indexOf(distance);
 
 
-socket.on("diceResult", function(data) {
+if(diceIndex === -1) {
 
-const diceText =
-"🎲 " +
-data.dice1 +
-"    🎲 " +
-data.dice2;
+gameMessage.textContent =
+"❌ حرکت با عدد تاس شما هماهنگ نیست.";
 
-
-document
-.getElementById("lastDice")
-.textContent =
-diceText;
-
-
-addRoomMessage(
-"🎲 تاس انداخته شد: " +
-data.dice1 +
-" و " +
-data.dice2
-);
-
-});
-
-
-function addRoomMessage(text) {
-
-const message =
-document.createElement("div");
-
-message.className =
-"chat-message";
-
-message.textContent =
-text;
-
-
-const box =
-document
-.getElementById("roomChatBox");
-
-
-box.appendChild(message);
-
-
-box.scrollTop =
-box.scrollHeight;
+return;
 
 }
 
 
-document
-.getElementById("roomSendChatBtn")
-.addEventListener("click", function() {
+/*
+بررسی جهت حرکت
+*/
 
-sendRoomChat();
+if(currentPlayer === "white" &&
+to <= from) {
 
-});
+gameMessage.textContent =
+"❌ بازیکن سفید باید به سمت خانه‌های بالاتر حرکت کند.";
 
-
-document
-.getElementById("roomChatInput")
-.addEventListener("keydown", function(event) {
-
-if (event.key === "Enter") {
-
-sendRoomChat();
+return;
 
 }
 
-});
+
+if(currentPlayer === "black" &&
+to >= from) {
+
+gameMessage.textContent =
+"❌ بازیکن سیاه باید به سمت خانه‌های پایین‌تر حرکت کند.";
+
+return;
+
+}
 
 
-function sendRoomChat() {
+/*
+بررسی مهره مقصد
+*/
 
-const input =
-document
-.getElementById("roomChatInput");
-
-const text =
-input.value.trim();
-
-
-if (
-text === "" ||
-!currentRoom
+if(
+points[to].length > 1 &&
+points[to][0] !== currentPlayer
 ) {
 
-return;
-
-}
-
-
-socket.emit(
-"chatMessage",
-{
-
-roomCode:
-currentRoom,
-
-message:
-text
-
-}
-);
-
-
-input.value = "";
-
-}
-
-
-socket.on("chatMessage", function(data) {
-
-addRoomMessage(
-"👤 بازیکن: " +
-data.message
-);
-
-});
-
-
-document
-.getElementById("chatBtn")
-.addEventListener("click", function() {
-
-showPage(chatPage);
-
-});
-
-
-document
-.getElementById("sendChatBtn")
-.addEventListener("click", function() {
-
-sendPublicChat();
-
-});
-
-
-document
-.getElementById("chatInput")
-.addEventListener("keydown", function(event) {
-
-if (event.key === "Enter") {
-
-sendPublicChat();
-
-}
-
-});
-
-
-function sendPublicChat() {
-
-const input =
-document
-.getElementById("chatInput");
-
-const text =
-input.value.trim();
-
-
-if (text === "") {
+gameMessage.textContent =
+"❌ این خانه توسط دو مهره حریف بسته شده است.";
 
 return;
 
 }
 
 
-const message =
-document.createElement("div");
+/*
+زدن تک مهره حریف
+*/
 
-message.className =
-"chat-message";
+if(
+points[to].length === 1 &&
+points[to][0] !== currentPlayer
+) {
 
-message.textContent =
-"👤 شما: " +
-text;
+points[to] = [];
 
-
-document
-.getElementById("chatBox")
-.appendChild(message);
-
-
-input.value = "";
+gameMessage.textContent =
+"💥 مهره حریف زده شد!";
 
 }
+
+
+/*
+برداشتن مهره
+*/
+
+points[from].pop();
+
+
+/*
+قرار دادن مهره
+*/
+
+points[to].push(
+currentPlayer
+);
+
+
+/*
+حذف تاس استفاده شده
+*/
+
+dice.splice(
+diceIndex,
+1
+);
+
+
+selectedPoint =
+null;
+
+
+renderBoard();
+
+
+/*
+بررسی برد
+*/
+
+let remaining =
+0;
+
+for(let i = 0; i < 24; i++) {
+
+remaining +=
+points[i].filter(
+x => x === currentPlayer
+).length;
+
+}
+
+
+if(remaining === 0) {
+
+gameMessage.textContent =
+"🏆 بازیکن " +
+(currentPlayer === "white" ?
+"سفید" :
+"سیاه") +
+" برنده شد!";
+
+dice = [];
+
+return;
+
+}
+
+
+/*
+اگر تاس تمام شد
+*/
+
+if(dice.length === 0) {
+
+currentPlayer =
+currentPlayer === "white" ?
+"black" :
+"white";
+
+
+turnText.textContent =
+"نوبت بازیکن " +
+(currentPlayer === "white" ?
+"سفید ⚪" :
+"سیاه ⚫");
+
+
+diceText.textContent =
+"برای ادامه تاس بیندازید.";
+
+gameMessage.textContent =
+"🎲 نوبت بازیکن بعدی است.";
+
+}
+
+}
+
+
+diceBtn.addEventListener(
+"click",
+rollDice
+);
+
+
+resetBtn.addEventListener(
+"click",
+function() {
+
+currentPlayer =
+"white";
+
+dice =
+[];
+
+selectedPoint =
+null;
+
+createInitialBoard();
+
+createBoard();
+
+turnText.textContent =
+"نوبت بازیکن سفید ⚪";
+
+diceText.textContent =
+"برای شروع تاس بیندازید";
+
+gameMessage.textContent =
+"بازی جدید شروع شد.";
+
+}
+);
+
+
+backBtn.addEventListener(
+"click",
+function() {
+
+gamePage.classList.add(
+"hidden"
+);
+
+home.classList.remove(
+"hidden"
+);
+
+}
+);
 
 
 document
 .getElementById("offlineBtn")
-.addEventListener("click", function() {
-
-alert(
-"🎲 بازی آفلاین دو نفره\n\n" +
-"صفحه تخته نرد در مرحله بعد اضافه می‌شود."
-);
-
-});
-
-
-document
-.querySelectorAll(".backBtn")
-.forEach(function(button) {
-
-button.addEventListener(
+.addEventListener(
 "click",
-goHome
+function() {
+
+home.classList.add(
+"hidden"
 );
 
-});
+gamePage.classList.remove(
+"hidden"
+);
 
-});
+createInitialBoard();
+
+createBoard();
+
+}
+);
+
+
+/*
+شروع اولیه
+*/
+
+createInitialBoard();
 
 </script>
 
