@@ -212,8 +212,6 @@ input {
 </div>
 
 
-<!-- صفحه اصلی -->
-
 <div id="home" class="page">
 
 <h2>🎮 انتخاب نوع بازی</h2>
@@ -236,8 +234,6 @@ input {
 
 </div>
 
-
-<!-- ساخت اتاق -->
 
 <div id="createPage" class="page hidden">
 
@@ -309,8 +305,6 @@ placeholder="پیام خود را بنویس...">
 </div>
 
 
-<!-- ورود به اتاق -->
-
 <div id="joinPage" class="page hidden">
 
 <h2>🔑 ورود به اتاق دوست</h2>
@@ -338,8 +332,6 @@ placeholder="مثلاً 123456">
 
 </div>
 
-
-<!-- چت عمومی -->
 
 <div id="chatPage" class="page hidden">
 
@@ -378,8 +370,6 @@ placeholder="پیام خود را بنویس...">
 </div>
 
 
-<!-- Socket.IO -->
-
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 
 
@@ -387,268 +377,537 @@ placeholder="پیام خود را بنویس...">
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    // آدرس سرور Render
-    const SERVER_URL =
-        "https://milad-game-server.onrender.com";
+const SERVER_URL =
+"https://milad-game-server.onrender.com";
 
-    // اتصال به سرور
-    const socket =
-        io(SERVER_URL);
+const socket =
+io(SERVER_URL);
 
-    let currentRoom =
-        null;
+let currentRoom = null;
 
 
-    // عناصر صفحات
+const home =
+document.getElementById("home");
 
-    const home =
-        document.getElementById("home");
+const createPage =
+document.getElementById("createPage");
 
-    const createPage =
-        document.getElementById("createPage");
+const joinPage =
+document.getElementById("joinPage");
 
-    const joinPage =
-        document.getElementById("joinPage");
+const chatPage =
+document.getElementById("chatPage");
 
-    const chatPage =
-        document.getElementById("chatPage");
+const connectionStatus =
+document.getElementById("connectionStatus");
 
-    const connectionStatus =
-        document.getElementById("connectionStatus");
 
+function showPage(page) {
 
-    // نمایش صفحه
+home.classList.add("hidden");
+createPage.classList.add("hidden");
+joinPage.classList.add("hidden");
+chatPage.classList.add("hidden");
 
-    function showPage(page) {
+page.classList.remove("hidden");
 
-        home.classList.add("hidden");
-        createPage.classList.add("hidden");
-        joinPage.classList.add("hidden");
-        chatPage.classList.add("hidden");
+window.scrollTo(0, 0);
 
-        page.classList.remove("hidden");
+}
 
-        window.scrollTo(0, 0);
 
-    }
+function goHome() {
 
+showPage(home);
 
-    // بازگشت
+}
 
-    function goHome() {
 
-        showPage(home);
+socket.on("connect", function() {
 
-    }
+connectionStatus.textContent =
+"🟢 اتصال به سرور برقرار است";
 
+connectionStatus.style.color =
+"#7dffb2";
 
-    // اتصال موفق
+});
 
-    socket.on("connect", function() {
 
-        connectionStatus.textContent =
-            "🟢 اتصال به سرور برقرار است";
+socket.on("disconnect", function() {
 
-        connectionStatus.style.color =
-            "#7dffb2";
+connectionStatus.textContent =
+"🔴 اتصال به سرور قطع شد";
 
-    });
+connectionStatus.style.color =
+"#ff8a8a";
 
+});
 
-    // قطع اتصال
 
-    socket.on("disconnect", function() {
+socket.on("connect_error", function() {
 
-        connectionStatus.textContent =
-            "🔴 اتصال به سرور قطع شد";
+connectionStatus.textContent =
+"🟠 اتصال به سرور در حال تلاش مجدد است";
 
-        connectionStatus.style.color =
-            "#ff8a8a";
+});
 
-    });
 
+document
+.getElementById("createBtn")
+.addEventListener("click", function() {
 
-    // خطای اتصال
+if (!socket.connected) {
 
-    socket.on("connect_error", function() {
+alert(
+"سرور هنوز آماده نیست. چند ثانیه صبر کن."
+);
 
-        connectionStatus.textContent =
-            "🟠 اتصال به سرور در حال تلاش مجدد است";
+return;
 
-    });
+}
 
+socket.emit("createRoom");
 
-    // =========================
-    // ساخت اتاق
-    // =========================
+showPage(createPage);
 
-    document
-    .getElementById("createBtn")
-    .addEventListener("click", function() {
+});
 
-        if (!socket.connected) {
 
-            alert(
-                "سرور هنوز آماده نیست. چند ثانیه صبر کن."
-            );
+socket.on("roomCreated", function(code) {
 
-            return;
+currentRoom = code;
 
-        }
+document
+.getElementById("roomCode")
+.textContent = code;
 
-        socket.emit("createRoom");
+document
+.getElementById("createMessage")
+.textContent =
+"✅ اتاق ساخته شد. کد را برای دوستت بفرست.";
 
-        showPage(createPage);
+updatePlayers(1);
 
-    });
+});
 
 
-    // دریافت کد اتاق
+document
+.getElementById("joinBtn")
+.addEventListener("click", function() {
 
-    socket.on("roomCreated", function(code) {
+showPage(joinPage);
 
-        currentRoom =
-            code;
+});
 
-        document
-        .getElementById("roomCode")
-        .textContent =
-            code;
 
-        document
-        .getElementById("createMessage")
-        .textContent =
-            "✅ اتاق ساخته شد. کد را برای دوستت بفرست.";
+document
+.getElementById("joinRoomBtn")
+.addEventListener("click", function() {
 
-        updatePlayers(1);
+const code =
+document
+.getElementById("joinInput")
+.value
+.trim();
 
-    });
+const message =
+document
+.getElementById("joinMessage");
 
 
-    // =========================
-    // ورود به اتاق
-    // =========================
+if (!/^[0-9]{6}$/.test(code)) {
 
-    document
-    .getElementById("joinBtn")
-    .addEventListener("click", function() {
+message.textContent =
+"❌ لطفاً یک کد ۶ رقمی وارد کن.";
 
-        showPage(joinPage);
+return;
 
-    });
+}
 
 
-    document
-    .getElementById("joinRoomBtn")
-    .addEventListener("click", function() {
+if (!socket.connected) {
 
-        const code =
-            document
-            .getElementById("joinInput")
-            .value
-            .trim();
+message.textContent =
+"❌ اتصال به سرور برقرار نیست.";
 
-        const message =
-            document
-            .getElementById("joinMessage");
+return;
 
+}
 
-        if (!/^[0-9]{6}$/.test(code)) {
 
-            message.textContent =
-                "❌ لطفاً یک کد ۶ رقمی وارد کن.";
+socket.emit(
+"joinRoom",
+code
+);
 
-            return;
+message.textContent =
+"🔄 در حال ورود به اتاق...";
 
-        }
+});
 
 
-        if (!socket.connected) {
+socket.on("roomJoined", function(code) {
 
-            message.textContent =
-                "❌ اتصال به سرور برقرار نیست.";
+currentRoom = code;
 
-            return;
+document
+.getElementById("roomCode")
+.textContent = code;
 
-        }
+document
+.getElementById("createMessage")
+.textContent =
+"✅ با موفقیت وارد اتاق شدی.";
 
+showPage(createPage);
 
-        socket.emit(
-            "joinRoom",
-            code
-        );
+});
 
-        message.textContent =
-            "🔄 در حال ورود به اتاق...";
 
-    });
+socket.on("roomError", function(error) {
 
+document
+.getElementById("joinMessage")
+.textContent =
+"❌ " + error;
 
-    // ورود موفق
+});
 
-    socket.on("roomJoined", function(code) {
 
-        currentRoom =
-            code;
+function updatePlayers(count) {
 
-        document
-        .getElementById("roomCode")
-        .textContent =
-            code;
+document
+.getElementById("players")
+.textContent =
+"👥 بازیکنان: " +
+count +
+" / 2";
 
-        document
-        .getElementById("createMessage")
-        .textContent =
-            "✅ با موفقیت وارد اتاق شدی.";
+}
 
-        showPage(createPage);
 
-    });
+socket.on("playerJoined", function(data) {
 
+updatePlayers(data.players);
 
-    // خطای اتاق
+addRoomMessage(
+"🤖 سیستم: یک بازیکن وارد اتاق شد."
+);
 
-    socket.on("roomError", function(error) {
+});
 
-        document
-        .getElementById("joinMessage")
-        .textContent =
-            "❌ " + error;
 
-    });
+document
+.getElementById("copyBtn")
+.addEventListener("click", function() {
 
+if (!currentRoom) {
+return;
+}
 
-    // =========================
-    // تعداد بازیکنان
-    // =========================
+navigator.clipboard
+.writeText(currentRoom)
+.then(function() {
 
-    function updatePlayers(count) {
+document
+.getElementById("createMessage")
+.textContent =
+"✅ کد اتاق کپی شد.";
 
-        document
-        .getElementById("players")
-        .textContent =
-            "👥 بازیکنان: " +
-            count +
-            " / 2";
+});
 
-    }
+});
 
 
-    socket.on("playerJoined", function(data) {
+document
+.getElementById("inviteBtn")
+.addEventListener("click", function() {
 
-        updatePlayers(
-            data.players
-        );
+if (!currentRoom) {
+return;
+}
 
-        addRoomMessage(
-            "🤖 سیستم: یک بازیکن وارد اتاق شد."
-        );
+const inviteText =
+"🎲 بیا با هم در میلاد گیم تخته نرد بازی کنیم!\n" +
+"🔑 کد اتاق: " +
+currentRoom +
+"\n" +
+"🌐 لینک بازی:\n" +
+window.location.href;
 
-    });
 
+if (navigator.share) {
 
-    // =========================
-    // کپی کد
-    // =========================
+navigator.share({
 
-   
+title:
+"دعوت به میلاد گیم",
+
+text:
+inviteText
+
+});
+
+} else {
+
+navigator.clipboard
+.writeText(inviteText)
+.then(function() {
+
+alert(
+"✅ متن دعوت کپی شد."
+);
+
+});
+
+}
+
+});
+
+
+document
+.getElementById("startOnlineBtn")
+.addEventListener("click", function() {
+
+if (!currentRoom) {
+
+alert(
+"اول وارد یک اتاق شو."
+);
+
+return;
+
+}
+
+socket.emit(
+"diceRoll",
+{
+roomCode:
+currentRoom
+}
+);
+
+});
+
+
+socket.on("diceResult", function(data) {
+
+const diceText =
+"🎲 " +
+data.dice1 +
+"    🎲 " +
+data.dice2;
+
+
+document
+.getElementById("lastDice")
+.textContent =
+diceText;
+
+
+addRoomMessage(
+"🎲 تاس انداخته شد: " +
+data.dice1 +
+" و " +
+data.dice2
+);
+
+});
+
+
+function addRoomMessage(text) {
+
+const message =
+document.createElement("div");
+
+message.className =
+"chat-message";
+
+message.textContent =
+text;
+
+
+const box =
+document
+.getElementById("roomChatBox");
+
+
+box.appendChild(message);
+
+
+box.scrollTop =
+box.scrollHeight;
+
+}
+
+
+document
+.getElementById("roomSendChatBtn")
+.addEventListener("click", function() {
+
+sendRoomChat();
+
+});
+
+
+document
+.getElementById("roomChatInput")
+.addEventListener("keydown", function(event) {
+
+if (event.key === "Enter") {
+
+sendRoomChat();
+
+}
+
+});
+
+
+function sendRoomChat() {
+
+const input =
+document
+.getElementById("roomChatInput");
+
+const text =
+input.value.trim();
+
+
+if (
+text === "" ||
+!currentRoom
+) {
+
+return;
+
+}
+
+
+socket.emit(
+"chatMessage",
+{
+
+roomCode:
+currentRoom,
+
+message:
+text
+
+}
+);
+
+
+input.value = "";
+
+}
+
+
+socket.on("chatMessage", function(data) {
+
+addRoomMessage(
+"👤 بازیکن: " +
+data.message
+);
+
+});
+
+
+document
+.getElementById("chatBtn")
+.addEventListener("click", function() {
+
+showPage(chatPage);
+
+});
+
+
+document
+.getElementById("sendChatBtn")
+.addEventListener("click", function() {
+
+sendPublicChat();
+
+});
+
+
+document
+.getElementById("chatInput")
+.addEventListener("keydown", function(event) {
+
+if (event.key === "Enter") {
+
+sendPublicChat();
+
+}
+
+});
+
+
+function sendPublicChat() {
+
+const input =
+document
+.getElementById("chatInput");
+
+const text =
+input.value.trim();
+
+
+if (text === "") {
+
+return;
+
+}
+
+
+const message =
+document.createElement("div");
+
+message.className =
+"chat-message";
+
+message.textContent =
+"👤 شما: " +
+text;
+
+
+document
+.getElementById("chatBox")
+.appendChild(message);
+
+
+input.value = "";
+
+}
+
+
+document
+.getElementById("offlineBtn")
+.addEventListener("click", function() {
+
+alert(
+"🎲 بازی آفلاین دو نفره\n\n" +
+"صفحه تخته نرد در مرحله بعد اضافه می‌شود."
+);
+
+});
+
+
+document
+.querySelectorAll(".backBtn")
+.forEach(function(button) {
+
+button.addEventListener(
+"click",
+goHome
+);
+
+});
+
+});
+
+</script>
+
+</body>
+</html>
