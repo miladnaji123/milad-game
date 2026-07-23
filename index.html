@@ -72,7 +72,12 @@ button {
 }
 
 button:active {
-    transform: scale(0.97);
+    transform: scale(.97);
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
 }
 
 .btn-offline {
@@ -97,6 +102,15 @@ button:active {
 
 .hidden {
     display: none !important;
+}
+
+.status {
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+    background: #160b05;
+    margin-bottom: 15px;
+    color: #ffd98a;
 }
 
 .room-code {
@@ -125,6 +139,7 @@ input {
     font-family: Tahoma;
     font-size: 18px;
     text-align: center;
+    outline: none;
 }
 
 .message {
@@ -132,6 +147,14 @@ input {
     color: #ffd98a;
     line-height: 2;
     margin-top: 15px;
+}
+
+.players {
+    text-align: center;
+    background: #241107;
+    padding: 12px;
+    border-radius: 10px;
+    margin: 15px 0;
 }
 
 .chat-box {
@@ -148,6 +171,20 @@ input {
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 8px;
+    text-align: right;
+}
+
+.dice-area {
+    text-align: center;
+    background: #241107;
+    border-radius: 15px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.dice {
+    font-size: 45px;
+    margin: 10px;
 }
 
 .footer {
@@ -155,7 +192,6 @@ input {
     color: #c9a77c;
     margin-top: 25px;
 }
-
 </style>
 </head>
 
@@ -169,6 +205,10 @@ input {
 
 <div class="subtitle">
 بازی تخته نرد آنلاین و آفلاین با دوستان
+</div>
+
+<div id="connectionStatus" class="status">
+🔄 در حال اتصال به سرور...
 </div>
 
 
@@ -197,11 +237,11 @@ input {
 </div>
 
 
-<!-- صفحه ساخت اتاق -->
+<!-- ساخت اتاق -->
 
 <div id="createPage" class="page hidden">
 
-<h2>🏠 ساخت اتاق آنلاین</h2>
+<h2>🏠 اتاق آنلاین</h2>
 
 <p class="message">
 کد اتاق شما:
@@ -209,6 +249,10 @@ input {
 
 <div id="roomCode" class="room-code">
 ------
+</div>
+
+<div id="players" class="players">
+👥 بازیکنان: 0 / 2
 </div>
 
 <button id="copyBtn" class="btn-online">
@@ -220,7 +264,40 @@ input {
 </button>
 
 <button id="startOnlineBtn" class="btn-online">
-🎲 شروع بازی
+🎲 انداختن تاس
+</button>
+
+<div class="dice-area">
+
+<div>
+تاس شما
+</div>
+
+<div id="myDice" class="dice">
+🎲 🎲
+</div>
+
+<div>
+آخرین نتیجه
+</div>
+
+<div id="lastDice" class="dice">
+-
+</div>
+
+</div>
+
+<h3>💬 چت اتاق</h3>
+
+<div id="roomChatBox" class="chat-box"></div>
+
+<input
+id="roomChatInput"
+type="text"
+placeholder="پیام خود را بنویس...">
+
+<button id="roomSendChatBtn" class="btn-chat">
+📤 ارسال پیام
 </button>
 
 <button class="btn-back backBtn">
@@ -232,7 +309,7 @@ input {
 </div>
 
 
-<!-- صفحه ورود -->
+<!-- ورود به اتاق -->
 
 <div id="joinPage" class="page hidden">
 
@@ -262,7 +339,7 @@ placeholder="مثلاً 123456">
 </div>
 
 
-<!-- صفحه چت -->
+<!-- چت عمومی -->
 
 <div id="chatPage" class="page hidden">
 
@@ -295,15 +372,34 @@ placeholder="پیام خود را بنویس...">
 <div class="footer">
 🎲 میلاد گیم
 <br>
-نسخه آزمایشی
+نسخه آزمایشی آنلاین
 </div>
 
 </div>
+
+
+<!-- Socket.IO -->
+
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 
 
 <script>
 
 document.addEventListener("DOMContentLoaded", function() {
+
+    // آدرس سرور Render
+    const SERVER_URL =
+        "https://milad-game-server.onrender.com";
+
+    // اتصال به سرور
+    const socket =
+        io(SERVER_URL);
+
+    let currentRoom =
+        null;
+
+
+    // عناصر صفحات
 
     const home =
         document.getElementById("home");
@@ -317,6 +413,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const chatPage =
         document.getElementById("chatPage");
 
+    const connectionStatus =
+        document.getElementById("connectionStatus");
+
+
+    // نمایش صفحه
 
     function showPage(page) {
 
@@ -328,8 +429,11 @@ document.addEventListener("DOMContentLoaded", function() {
         page.classList.remove("hidden");
 
         window.scrollTo(0, 0);
+
     }
 
+
+    // بازگشت
 
     function goHome() {
 
@@ -338,138 +442,92 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 
-    // بازی آفلاین
+    // اتصال موفق
 
-    document
-    .getElementById("offlineBtn")
-    .addEventListener("click", function() {
+    socket.on("connect", function() {
 
-        alert(
-            "🎲 بازی آفلاین\n\n" +
-            "صفحه بازی تخته نرد در مرحله بعد اضافه می‌شود."
-        );
+        connectionStatus.textContent =
+            "🟢 اتصال به سرور برقرار است";
+
+        connectionStatus.style.color =
+            "#7dffb2";
 
     });
 
 
+    // قطع اتصال
+
+    socket.on("disconnect", function() {
+
+        connectionStatus.textContent =
+            "🔴 اتصال به سرور قطع شد";
+
+        connectionStatus.style.color =
+            "#ff8a8a";
+
+    });
+
+
+    // خطای اتصال
+
+    socket.on("connect_error", function() {
+
+        connectionStatus.textContent =
+            "🟠 اتصال به سرور در حال تلاش مجدد است";
+
+    });
+
+
+    // =========================
     // ساخت اتاق
+    // =========================
 
     document
     .getElementById("createBtn")
     .addEventListener("click", function() {
 
-        let code =
-            Math.floor(
-                100000 +
-                Math.random() * 900000
-            ).toString();
+        if (!socket.connected) {
 
-        document
-        .getElementById("roomCode")
-        .textContent = code;
+            alert(
+                "سرور هنوز آماده نیست. چند ثانیه صبر کن."
+            );
 
-        document
-        .getElementById("createMessage")
-        .textContent =
-        "✅ اتاق با موفقیت ساخته شد.";
+            return;
+
+        }
+
+        socket.emit("createRoom");
 
         showPage(createPage);
 
     });
 
 
-    // کپی کد
+    // دریافت کد اتاق
 
-    document
-    .getElementById("copyBtn")
-    .addEventListener("click", function() {
+    socket.on("roomCreated", function(code) {
 
-        let code =
-            document
-            .getElementById("roomCode")
-            .textContent;
+        currentRoom =
+            code;
 
-        if (
-            navigator.clipboard &&
-            window.isSecureContext
-        ) {
+        document
+        .getElementById("roomCode")
+        .textContent =
+            code;
 
-            navigator.clipboard
-            .writeText(code)
-            .then(function() {
+        document
+        .getElementById("createMessage")
+        .textContent =
+            "✅ اتاق ساخته شد. کد را برای دوستت بفرست.";
 
-                document
-                .getElementById("createMessage")
-                .textContent =
-                "✅ کد اتاق کپی شد.";
-
-            });
-
-        } else {
-
-            alert(
-                "کد اتاق شما:\n" + code
-            );
-
-        }
+        updatePlayers(1);
 
     });
 
 
-    // دعوت از دوست
-
-    document
-    .getElementById("inviteBtn")
-    .addEventListener("click", function() {
-
-        let code =
-            document
-            .getElementById("roomCode")
-            .textContent;
-
-        let text =
-            "🎲 بیا در میلاد گیم با هم تخته نرد بازی کنیم!\n" +
-            "کد اتاق: " + code;
-
-        if (navigator.share) {
-
-            navigator.share({
-
-                title:
-                "دعوت به میلاد گیم",
-
-                text:
-                text,
-
-                url:
-                window.location.href
-
-            });
-
-        } else {
-
-            alert(text);
-
-        }
-
-    });
-
-
-    // شروع بازی آنلاین
-
-    document
-    .getElementById("startOnlineBtn")
-    .addEventListener("click", function() {
-
-        alert(
-            "🎲 اتاق بازی آماده است!\n\n" +
-            "بازی آنلاین واقعی در مرحله بعد به سرور وصل می‌شود."
-        );
-
-    });
-
-
-    // صفحه ورود
+    // =========================
+    // ورود به اتاق
+    // =========================
 
     document
     .getElementById("joinBtn")
@@ -480,134 +538,117 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 
-    // ورود به اتاق
-
     document
     .getElementById("joinRoomBtn")
     .addEventListener("click", function() {
 
-        let code =
+        const code =
             document
             .getElementById("joinInput")
             .value
             .trim();
 
-        let message =
+        const message =
             document
             .getElementById("joinMessage");
 
-        if (
-            !/^[0-9]{6}$/.test(code)
-        ) {
+
+        if (!/^[0-9]{6}$/.test(code)) {
 
             message.textContent =
-            "❌ لطفاً یک کد ۶ رقمی وارد کن.";
+                "❌ لطفاً یک کد ۶ رقمی وارد کن.";
 
             return;
 
         }
 
-        message.textContent =
-        "✅ کد اتاق درست است. اتصال واقعی به سرور در مرحله بعد فعال می‌شود.";
 
-    });
+        if (!socket.connected) {
 
-
-    // صفحه چت
-
-    document
-    .getElementById("chatBtn")
-    .addEventListener("click", function() {
-
-        showPage(chatPage);
-
-    });
-
-
-    // ارسال پیام
-
-    function sendChat() {
-
-        let input =
-            document
-            .getElementById("chatInput");
-
-        let text =
-            input.value.trim();
-
-        if (text === "") {
+            message.textContent =
+                "❌ اتصال به سرور برقرار نیست.";
 
             return;
 
         }
 
-        let message =
-            document.createElement("div");
 
-        message.className =
-            "chat-message";
+        socket.emit(
+            "joinRoom",
+            code
+        );
 
         message.textContent =
-            "👤 شما: " + text;
+            "🔄 در حال ورود به اتاق...";
+
+    });
+
+
+    // ورود موفق
+
+    socket.on("roomJoined", function(code) {
+
+        currentRoom =
+            code;
 
         document
-        .getElementById("chatBox")
-        .appendChild(message);
-
-        input.value = "";
+        .getElementById("roomCode")
+        .textContent =
+            code;
 
         document
-        .getElementById("chatBox")
-        .scrollTop =
+        .getElementById("createMessage")
+        .textContent =
+            "✅ با موفقیت وارد اتاق شدی.";
+
+        showPage(createPage);
+
+    });
+
+
+    // خطای اتاق
+
+    socket.on("roomError", function(error) {
+
         document
-        .getElementById("chatBox")
-        .scrollHeight;
+        .getElementById("joinMessage")
+        .textContent =
+            "❌ " + error;
+
+    });
+
+
+    // =========================
+    // تعداد بازیکنان
+    // =========================
+
+    function updatePlayers(count) {
+
+        document
+        .getElementById("players")
+        .textContent =
+            "👥 بازیکنان: " +
+            count +
+            " / 2";
 
     }
 
 
-    document
-    .getElementById("sendChatBtn")
-    .addEventListener(
-        "click",
-        sendChat
-    );
+    socket.on("playerJoined", function(data) {
 
+        updatePlayers(
+            data.players
+        );
 
-    document
-    .getElementById("chatInput")
-    .addEventListener(
-        "keydown",
-        function(event) {
-
-            if (
-                event.key === "Enter"
-            ) {
-
-                sendChat();
-
-            }
-
-        }
-    );
-
-
-    // همه دکمه‌های بازگشت
-
-    document
-    .querySelectorAll(".backBtn")
-    .forEach(function(button) {
-
-        button.addEventListener(
-            "click",
-            goHome
+        addRoomMessage(
+            "🤖 سیستم: یک بازیکن وارد اتاق شد."
         );
 
     });
 
-});
 
-</script>
+    // =========================
+    // کپی کد
+    // =========================
 
-</body>
-</html>
+   
