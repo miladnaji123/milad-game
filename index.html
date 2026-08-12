@@ -1,25 +1,824 @@
-<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Milad Game - تخته نرد آنلاین</title>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            background: #171717;
+            color: white;
+            text-align: center;
+        }
+
+        header {
+            padding: 18px;
+            background: #222;
+            border-bottom: 2px solid #444;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .status {
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .online {
+            color: #00e676;
+        }
+
+        .offline {
+            color: #ff5252;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1100px;
+            margin: 20px auto;
+        }
+
+        .panel {
+            background: #242424;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 220px;
+            max-width: 90%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            background: #111;
+            color: white;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #1976d2;
+            color: white;
+        }
+
+        button:hover {
+            opacity: .85;
+        }
+
+        .create {
+            background: #2e7d32;
+        }
+
+        .join {
+            background: #1565c0;
+        }
+
+        .dice {
+            font-size: 50px;
+            margin: 15px;
+        }
+
+        .room-code {
+            font-size: 30px;
+            letter-spacing: 5px;
+            color: #ffd740;
+            margin: 15px;
+        }
+
+        .players {
+            font-size: 18px;
+            margin: 10px;
+        }
+
+        .board {
+            width: min(95vw, 800px);
+            height: min(75vw, 600px);
+            min-height: 450px;
+            margin: 20px auto;
+            padding: 15px;
+            background: #7b4a25;
+            border: 8px solid #4a2c17;
+            border-radius: 10px;
+
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 5px;
+        }
+
+        .point {
+            position: relative;
+            background: #d39b55;
+            min-height: 150px;
+            cursor: pointer;
+        }
+
+        .point:nth-child(even) {
+            background: #9b542e;
+        }
+
+        .checker {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            margin: 4px auto;
+            border: 3px solid #222;
+        }
+
+        .white {
+            background: #eee;
+        }
+
+        .black {
+            background: #111;
+        }
+
+        .chat {
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        #messages {
+            height: 220px;
+            overflow-y: auto;
+            background: #111;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .message {
+            padding: 7px;
+            margin: 5px 0;
+            background: #292929;
+            border-radius: 7px;
+        }
+
+        #chatInput {
+            width: calc(100% - 110px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .notice {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 8px;
+            background: #333;
+        }
+
+        @media (max-width: 600px) {
+
+            h1 {
+                font-size: 21px;
+            }
+
+            .board {
+                min-height: 380px;
+                height: 100vw;
+                padding: 8px;
+            }
+
+            .point {
+                min-height: 100px;
+            }
+
+            .checker {
+                width: 30px;
+                height: 30px;
+            }
+
+            button {
+                width: 90%;
+            }
+
+            input {
+                width: 90%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <h1>🎲 Milad Game</h1>
+
+    <div id="connectionStatus" class="status offline">
+        🔴 در حال اتصال به سرور...
+    </div>
+
+</header>
+
+<div class="container">
+
+    <!-- پنل ورود -->
+    <div id="lobby" class="panel">
+
+        <h2>🎮 بازی آنلاین</h2>
+
+        <p>
+            برای بازی با دوستت یک اتاق بساز یا با کد اتاق وارد شو.
+        </p>
+
+        <button class="create" onclick="createRoom()">
+            ➕ ساخت اتاق
+        </button>
+
+        <br>
+
+        <input
+            id="roomInput"
+            type="text"
+            maxlength="6"
+            placeholder="کد ۶ رقمی اتاق"
+        >
+
+        <br>
+
+        <button class="join" onclick="joinRoom()">
+            🚪 ورود به اتاق
+        </button>
+
+        <div id="lobbyMessage" class="notice">
+            منتظر اتصال به سرور...
+        </div>
+
+    </div>
+
+
+    <!-- اتاق -->
+    <div id="roomPanel" class="panel hidden">
+
+        <h2>🏠 اتاق بازی</h2>
+
+        <div>
+            کد اتاق:
+        </div>
+
+        <div id="roomCode" class="room-code">
+            ------
+        </div>
+
+        <div id="players" class="players">
+            👤 بازیکنان: 1 / 2
+        </div>
+
+        <div id="gameStatus" class="notice">
+            منتظر بازیکن دوم...
+        </div>
+
+    </div>
+
+
+    <!-- بازی -->
+    <div id="gamePanel" class="panel hidden">
+
+        <h2>🎲 تخته نرد</h2>
+
+        <div id="dice" class="dice">
+            🎲 🎲
+        </div>
+
+        <button onclick="rollDice()">
+            🎲 ریختن تاس
+        </button>
+
+        <div class="board" id="board">
+
+        </div>
+
+    </div>
+
+
+    <!-- چت -->
+    <div id="chatPanel" class="panel chat hidden">
+
+        <h2>💬 چت بازی</h2>
+
+        <div id="messages"></div>
+
+        <input
+            id="chatInput"
+            type="text"
+            maxlength="500"
+            placeholder="پیام..."
+            onkeydown="handleChatKey(event)"
+        >
+
+        <button onclick="sendChat()">
+            ارسال
+        </button>
+
+    </div>
+
+</div>
+
 
 <script>
-const socket = io("https://milad-game-server.onrender.com");
+
+const SERVER_URL =
+    "https://milad-game-server.onrender.com";
+
+const socket =
+    io(SERVER_URL, {
+        transports: ["websocket", "polling"]
+    });
+
+
+let currentRoom = null;
+let connected = false;
+
+
+/* =========================
+   اتصال به سرور
+========================= */
 
 socket.on("connect", () => {
-    console.log("✅ Connected to Milad Game Server");
+
+    connected = true;
+
+    document.getElementById(
+        "connectionStatus"
+    ).className = "status online";
+
+    document.getElementById(
+        "connectionStatus"
+    ).textContent =
+        "🟢 اتصال به سرور برقرار است";
+
+    document.getElementById(
+        "lobbyMessage"
+    ).textContent =
+        "سرور آماده است. می‌توانی اتاق بسازی.";
+
 });
+
 
 socket.on("disconnect", () => {
-    console.log("❌ Disconnected from server");
+
+    connected = false;
+
+    document.getElementById(
+        "connectionStatus"
+    ).className = "status offline";
+
+    document.getElementById(
+        "connectionStatus"
+    ).textContent =
+        "🔴 اتصال به سرور قطع شد";
+
 });
+
+
+/* =========================
+   ساخت اتاق
+========================= */
+
+function createRoom() {
+
+    if (!connected) {
+
+        alert(
+            "هنوز به سرور متصل نشده‌ای."
+        );
+
+        return;
+    }
+
+    socket.emit("createRoom");
+
+}
+
+
+/* =========================
+   دریافت کد اتاق
+========================= */
 
 socket.on("roomCreated", (data) => {
-    console.log("🎲 Room created:", data.roomCode);
+
+    currentRoom =
+        data.roomCode;
+
+    showRoom(
+        data.roomCode
+    );
+
 });
+
+
+/* =========================
+   ورود به اتاق
+========================= */
+
+function joinRoom() {
+
+    if (!connected) {
+
+        alert(
+            "اتصال به سرور برقرار نیست."
+        );
+
+        return;
+    }
+
+    const input =
+        document.getElementById(
+            "roomInput"
+        );
+
+    const roomCode =
+        input.value.trim();
+
+    if (
+        !/^\d{6}$/.test(roomCode)
+    ) {
+
+        alert(
+            "کد اتاق باید ۶ رقم باشد."
+        );
+
+        return;
+    }
+
+    socket.emit(
+        "joinRoom",
+        roomCode
+    );
+
+}
+
+
+/* =========================
+   ورود موفق
+========================= */
 
 socket.on("joinedRoom", (data) => {
-    console.log("✅ Joined room:", data.roomCode);
+
+    currentRoom =
+        data.roomCode;
+
+    showRoom(
+        data.roomCode
+    );
+
 });
 
-socket.on("gameReady", (data) => {
-    console.log("🎮 Game ready:", data.message);
+
+/* =========================
+   خطای ورود
+========================= */
+
+socket.on("joinError", (data) => {
+
+    alert(
+        data.message ||
+        "ورود به اتاق انجام نشد."
+    );
+
 });
+
+
+/* =========================
+   نمایش اتاق
+========================= */
+
+function showRoom(roomCode) {
+
+    document.getElementById(
+        "lobby"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "roomPanel"
+    ).classList.remove("hidden");
+
+    document.getElementById(
+        "chatPanel"
+    ).classList.remove("hidden");
+
+    document.getElementById(
+        "roomCode"
+    ).textContent =
+        roomCode;
+
+}
+
+
+/* =========================
+   وضعیت بازیکنان
+========================= */
+
+socket.on("playersUpdate", (data) => {
+
+    document.getElementById(
+        "players"
+    ).textContent =
+        `👤 بازیکنان: ${data.players} / 2`;
+
+});
+
+
+/* =========================
+   آماده شدن بازی
+========================= */
+
+socket.on("gameReady", (data) => {
+
+    document.getElementById(
+        "gameStatus"
+    ).textContent =
+        "🟢 هر دو بازیکن وارد شدند. بازی آماده است!";
+
+    document.getElementById(
+        "gamePanel"
+    ).classList.remove("hidden");
+
+    createBoard();
+
+});
+
+
+/* =========================
+   قطع شدن بازیکن
+========================= */
+
+socket.on("playerDisconnected", () => {
+
+    document.getElementById(
+        "gameStatus"
+    ).textContent =
+        "🔴 بازیکن مقابل از بازی خارج شد.";
+
+});
+
+
+/* =========================
+   تاس
+========================= */
+
+function rollDice() {
+
+    if (!currentRoom) {
+
+        alert(
+            "ابتدا وارد اتاق شو."
+        );
+
+        return;
+    }
+
+    const dice1 =
+        Math.floor(
+            Math.random() * 6
+        ) + 1;
+
+    const dice2 =
+        Math.floor(
+            Math.random() * 6
+        ) + 1;
+
+    const data = {
+        dice1,
+        dice2,
+        time: Date.now()
+    };
+
+    showDice(
+        dice1,
+        dice2
+    );
+
+    socket.emit(
+        "diceRolled",
+        data
+    );
+
+}
+
+
+/* =========================
+   دریافت تاس بازیکن مقابل
+========================= */
+
+socket.on("diceRolled", (data) => {
+
+    showDice(
+        data.dice1,
+        data.dice2
+    );
+
+});
+
+
+function showDice(
+    dice1,
+    dice2
+) {
+
+    document.getElementById(
+        "dice"
+    ).textContent =
+        `🎲 ${dice1}    🎲 ${dice2}`;
+
+}
+
+
+/* =========================
+   ساخت تخته
+========================= */
+
+function createBoard() {
+
+    const board =
+        document.getElementById(
+            "board"
+        );
+
+    board.innerHTML = "";
+
+    for (
+        let i = 0;
+        i < 24;
+        i++
+    ) {
+
+        const point =
+            document.createElement(
+                "div"
+            );
+
+        point.className =
+            "point";
+
+        point.dataset.point =
+            i + 1;
+
+        point.onclick =
+            () => moveChecker(i + 1);
+
+        board.appendChild(
+            point
+        );
+    }
+
+}
+
+
+/* =========================
+   حرکت مهره
+========================= */
+
+function moveChecker(point) {
+
+    if (!currentRoom) return;
+
+    const move = {
+        point: point,
+        player: socket.id,
+        time: Date.now()
+    };
+
+    socket.emit(
+        "gameMove",
+        move
+    );
+
+    console.log(
+        "Move sent:",
+        move
+    );
+
+}
+
+
+/* =========================
+   دریافت حرکت
+========================= */
+
+socket.on("gameMove", (data) => {
+
+    console.log(
+        "Opponent move:",
+        data
+    );
+
+});
+
+
+/* =========================
+   چت
+========================= */
+
+function sendChat() {
+
+    const input =
+        document.getElementById(
+            "chatInput"
+        );
+
+    const text =
+        input.value.trim();
+
+    if (!text) return;
+
+    socket.emit(
+        "chatMessage",
+        {
+            text: text
+        }
+    );
+
+    input.value = "";
+
+}
+
+
+function handleChatKey(event) {
+
+    if (
+        event.key === "Enter"
+    ) {
+
+        sendChat();
+
+    }
+
+}
+
+
+/* =========================
+   دریافت پیام
+========================= */
+
+socket.on("chatMessage", (data) => {
+
+    const messages =
+        document.getElementById(
+            "messages"
+        );
+
+    const message =
+        document.createElement(
+            "div"
+        );
+
+    message.className =
+        "message";
+
+    message.textContent =
+        data.text;
+
+    messages.appendChild(
+        message
+    );
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
+});
+
+
+/* =========================
+   وضعیت اولیه
+========================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        console.log(
+            "Milad Game loaded"
+        );
+
+    }
+);
+
 </script>
+
+</body>
+</html>
