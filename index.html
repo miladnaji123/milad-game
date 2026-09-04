@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Milad Game - تخته نرد آنلاین</title>
+  <title>🎲 Milad Game</title>
 
   <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 
@@ -15,39 +15,45 @@
 
     body {
       margin: 0;
-      font-family: Tahoma, Arial, sans-serif;
-      background: #171717;
+      background: #151515;
       color: white;
+      font-family: Tahoma, Arial, sans-serif;
       text-align: center;
     }
 
     .container {
-      width: 95%;
-      max-width: 900px;
+      width: 96%;
+      max-width: 950px;
       margin: auto;
-      padding: 20px 10px;
+      padding: 15px;
     }
 
     h1 {
-      margin: 10px 0;
-      font-size: 30px;
+      margin: 8px 0 15px;
     }
 
     .status {
-      padding: 12px;
-      margin: 15px 0;
-      border-radius: 12px;
       background: #292929;
-      font-size: 16px;
+      padding: 12px;
+      border-radius: 12px;
+      margin: 10px 0;
+    }
+
+    .success {
+      color: #4ade80;
+    }
+
+    .error {
+      color: #ff6b6b;
     }
 
     button {
-      border: none;
+      border: 0;
       border-radius: 12px;
-      padding: 14px 25px;
-      font-size: 17px;
+      padding: 13px 22px;
+      margin: 5px;
+      font-size: 16px;
       cursor: pointer;
-      margin: 6px;
     }
 
     #quickJoinBtn {
@@ -58,13 +64,21 @@
       max-width: 350px;
     }
 
-    #quickJoinBtn:disabled {
-      opacity: 0.5;
-    }
-
     #diceBtn {
       background: #2563eb;
       color: white;
+    }
+
+    button:disabled {
+      opacity: .5;
+    }
+
+    .waiting {
+      display: none;
+      background: #292929;
+      padding: 18px;
+      border-radius: 12px;
+      margin-top: 12px;
     }
 
     .game {
@@ -73,115 +87,145 @@
 
     .players {
       display: flex;
-      justify-content: space-between;
       gap: 10px;
-      margin: 15px 0;
+      margin: 12px 0;
     }
 
     .player {
       flex: 1;
-      padding: 12px;
       background: #292929;
+      padding: 10px;
       border-radius: 12px;
+    }
+
+    .board-wrapper {
+      background: #55351f;
+      border-radius: 18px;
+      padding: 10px;
+      margin-top: 15px;
     }
 
     .board {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 3px;
-      background: #6b4226;
-      padding: 10px;
-      border-radius: 15px;
-      margin-top: 15px;
+      background: #704523;
+      padding: 8px;
+      border-radius: 12px;
     }
 
     .cell {
-      min-height: 110px;
-      background: #d6a15d;
-      border-radius: 6px;
-      padding: 5px;
       position: relative;
+      min-height: 115px;
+      background: #d29a58;
+      border-radius: 5px;
+      padding: 5px;
       display: flex;
-      align-items: center;
-      justify-content: flex-start;
       flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      overflow: hidden;
     }
 
     .cell:nth-child(even) {
-      background: #b9783c;
+      background: #b87338;
+    }
+
+    .cell.selected {
+      outline: 4px solid #ffe600;
+      transform: scale(1.02);
+      z-index: 2;
+    }
+
+    .cell.possible {
+      outline: 3px solid #36ff75;
     }
 
     .cell-number {
       font-size: 11px;
-      opacity: 0.7;
-      margin-bottom: 5px;
+      color: #222;
+      margin-bottom: 3px;
+      font-weight: bold;
+    }
+
+    .checkers {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .checker {
-      width: 30px;
-      height: 30px;
+      width: 31px;
+      height: 31px;
       border-radius: 50%;
       margin: 1px;
       border: 2px solid #222;
-      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,.5);
     }
 
     .white {
-      background: white;
+      background: #f4f4f4;
     }
 
     .black {
       background: #111;
+      border-color: #777;
     }
 
     .dice-area {
-      margin: 15px 0;
       background: #292929;
       border-radius: 12px;
-      padding: 15px;
+      padding: 12px;
+      margin: 12px 0;
     }
 
-    .dice {
-      font-size: 35px;
-      margin: 5px;
-      display: inline-block;
+    #dice {
+      font-size: 34px;
+      margin-top: 8px;
+      min-height: 45px;
+    }
+
+    .help {
+      color: #ccc;
+      font-size: 13px;
+      margin: 10px 0;
     }
 
     .chat {
-      margin-top: 20px;
       background: #292929;
-      padding: 15px;
+      padding: 12px;
       border-radius: 12px;
+      margin-top: 15px;
     }
 
     #messages {
-      height: 180px;
+      height: 170px;
       overflow-y: auto;
       background: #111;
-      padding: 10px;
       border-radius: 10px;
+      padding: 8px;
       text-align: right;
-      margin-bottom: 10px;
     }
 
     .message {
-      margin: 5px 0;
-      padding: 7px;
       background: #333;
+      padding: 8px;
       border-radius: 8px;
+      margin: 5px 0;
     }
 
-    .chat-input {
+    .chat-row {
       display: flex;
-      gap: 7px;
+      gap: 6px;
+      margin-top: 8px;
     }
 
     #chatInput {
       flex: 1;
-      padding: 12px;
+      border: 0;
       border-radius: 10px;
-      border: none;
-      font-size: 16px;
+      padding: 12px;
+      font-size: 15px;
     }
 
     #sendBtn {
@@ -189,29 +233,9 @@
       color: white;
     }
 
-    .waiting {
-      display: none;
-      padding: 20px;
-      background: #292929;
-      border-radius: 12px;
-      margin-top: 15px;
-    }
-
-    .error {
-      color: #ff6b6b;
-    }
-
-    .success {
-      color: #4ade80;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 24px;
-      }
-
+    @media(max-width:600px) {
       .cell {
-        min-height: 75px;
+        min-height: 82px;
       }
 
       .checker {
@@ -219,8 +243,13 @@
         height: 22px;
       }
 
-      button {
-        font-size: 15px;
+      .board {
+        gap: 2px;
+        padding: 5px;
+      }
+
+      .cell-number {
+        font-size: 9px;
       }
     }
   </style>
@@ -233,10 +262,9 @@
   <h1>🎲 Milad Game</h1>
 
   <div id="status" class="status">
-    در حال اتصال به سرور...
+    ⏳ در حال اتصال به سرور...
   </div>
 
-  <!-- ورود سریع -->
   <div id="menu">
 
     <button id="quickJoinBtn">
@@ -246,29 +274,26 @@
     <div id="waiting" class="waiting">
       ⏳ منتظر پیدا شدن حریف هستید...
       <br><br>
-      وقتی بازیکن دیگری وارد شود، بازی خودکار شروع می‌شود.
+      بازیکن دیگری که وارد شود، بازی خودکار شروع می‌شود.
     </div>
 
   </div>
 
 
-  <!-- بازی -->
   <div id="game" class="game">
 
     <div class="players">
 
       <div class="player">
         👤 بازیکن اول
-        <div id="player1Status">
-          آماده
-        </div>
+        <br>
+        <span id="player1Status">🔴 انتظار</span>
       </div>
 
       <div class="player">
         👤 بازیکن دوم
-        <div id="player2Status">
-          آماده
-        </div>
+        <br>
+        <span id="player2Status">🔴 انتظار</span>
       </div>
 
     </div>
@@ -289,27 +314,35 @@
         🎲 🎲
       </div>
 
+      <div class="help">
+        ابتدا تاس بریزید، سپس روی مهره خود و بعد روی خانه مقصد بزنید.
+      </div>
+
     </div>
 
 
-    <!-- تخته -->
-    <div id="board" class="board"></div>
+    <div class="board-wrapper">
+      <div id="board" class="board"></div>
+    </div>
 
 
-    <!-- چت -->
     <div class="chat">
 
       <h3>💬 چت بازی</h3>
 
-      <div id="messages"></div>
+      <div id="messages">
+        <div class="message">
+          به چت بازی خوش آمدید 🌹
+        </div>
+      </div>
 
-      <div class="chat-input">
+      <div class="chat-row">
 
         <input
           id="chatInput"
           type="text"
-          placeholder="پیام خود را بنویسید..."
           maxlength="500"
+          placeholder="پیام خود را بنویسید..."
         >
 
         <button id="sendBtn">
@@ -327,236 +360,920 @@
 
 <script>
 
-  // =========================================
-  // آدرس سرور
-  // =========================================
+const SERVER_URL =
+  "https://milad-game-server.onrender.com";
 
-  const SERVER_URL =
-    "https://milad-game-server.onrender.com";
-
-
-  // =========================================
-  // اتصال Socket.IO
-  // =========================================
-
-  const socket = io(SERVER_URL, {
-    transports: ["websocket", "polling"]
-  });
+const socket = io(SERVER_URL, {
+  transports: ["websocket", "polling"]
+});
 
 
-  let gameId = null;
-  let myPlayerNumber = null;
-  let currentBoard = [
-    2, 0, 0, 0, 0, -5,
-    0, -3, 0, 0, 0, 5,
-    -5, 0, 0, 0, 3, 0,
-    5, 0, 0, 0, 0, -2
-  ];
+let gameId = null;
+let myPlayerNumber = null;
 
-  let currentTurn = null;
+let player1Id = null;
+let player2Id = null;
 
+let currentTurn = null;
 
-  // =========================================
-  // عناصر صفحه
-  // =========================================
+let boardState = [
+  2, 0, 0, 0, 0, -5,
+  0, -3, 0, 0, 0, 5,
+  -5, 0, 0, 0, 3, 0,
+  5, 0, 0, 0, 0, -2
+];
 
-  const status =
-    document.getElementById("status");
+let diceValues = [];
 
-  const quickJoinBtn =
-    document.getElementById("quickJoinBtn");
+let selectedPoint = null;
 
-  const waiting =
-    document.getElementById("waiting");
-
-  const menu =
-    document.getElementById("menu");
-
-  const game =
-    document.getElementById("game");
-
-  const board =
-    document.getElementById("board");
-
-  const dice =
-    document.getElementById("dice");
-
-  const diceBtn =
-    document.getElementById("diceBtn");
-
-  const turn =
-    document.getElementById("turn");
-
-  const messages =
-    document.getElementById("messages");
-
-  const chatInput =
-    document.getElementById("chatInput");
-
-  const sendBtn =
-    document.getElementById("sendBtn");
+let remainingMoves = [];
 
 
-  // =========================================
-  // اتصال
-  // =========================================
+/* =========================================
+   عناصر
+========================================= */
 
-  socket.on("connect", () => {
+const statusEl =
+  document.getElementById("status");
 
-    status.textContent =
-      "✅ اتصال به سرور برقرار است";
+const menu =
+  document.getElementById("menu");
 
-    status.className =
-      "status success";
+const game =
+  document.getElementById("game");
 
-    quickJoinBtn.disabled = false;
+const waiting =
+  document.getElementById("waiting");
 
-  });
+const quickJoinBtn =
+  document.getElementById("quickJoinBtn");
 
+const boardEl =
+  document.getElementById("board");
 
-  socket.on("connect_error", (error) => {
+const diceEl =
+  document.getElementById("dice");
 
-    console.log(error);
+const diceBtn =
+  document.getElementById("diceBtn");
 
-    status.textContent =
-      "❌ اتصال به سرور برقرار نشد";
+const turnEl =
+  document.getElementById("turn");
 
-    status.className =
-      "status error";
+const messages =
+  document.getElementById("messages");
 
-    quickJoinBtn.disabled = true;
+const chatInput =
+  document.getElementById("chatInput");
 
-  });
-
-
-  socket.on("disconnect", () => {
-
-    status.textContent =
-      "⚠️ اتصال به سرور قطع شد";
-
-    status.className =
-      "status error";
-
-  });
+const sendBtn =
+  document.getElementById("sendBtn");
 
 
-  // =========================================
-  // ورود سریع
-  // =========================================
+/* =========================================
+   اتصال
+========================================= */
 
-  quickJoinBtn.addEventListener("click", () => {
+socket.on("connect", () => {
+
+  statusEl.textContent =
+    "🟢 اتصال به سرور برقرار است";
+
+  statusEl.className =
+    "status success";
+
+  quickJoinBtn.disabled = false;
+
+});
+
+
+socket.on("connect_error", () => {
+
+  statusEl.textContent =
+    "🔴 اتصال به سرور برقرار نشد";
+
+  statusEl.className =
+    "status error";
+
+  quickJoinBtn.disabled = true;
+
+});
+
+
+socket.on("disconnect", () => {
+
+  statusEl.textContent =
+    "⚠️ اتصال به سرور قطع شد";
+
+  statusEl.className =
+    "status error";
+
+});
+
+
+/* =========================================
+   ورود سریع
+========================================= */
+
+quickJoinBtn.addEventListener(
+  "click",
+  () => {
 
     if (!socket.connected) {
 
-      alert("هنوز به سرور متصل نشده‌اید.");
+      alert(
+        "به سرور متصل نیستید."
+      );
 
       return;
     }
 
     quickJoinBtn.disabled = true;
 
-    waiting.style.display = "block";
+    waiting.style.display =
+      "block";
 
-    status.textContent =
+    statusEl.textContent =
       "⏳ در حال پیدا کردن حریف...";
 
     socket.emit("quickJoin");
 
-  });
+  }
+);
 
 
-  // =========================================
-  // منتظر حریف
-  // =========================================
+/* =========================================
+   انتظار
+========================================= */
 
-  socket.on("waiting", (data) => {
+socket.on("waiting", (data) => {
 
-    waiting.style.display = "block";
+  waiting.style.display =
+    "block";
 
-    status.textContent =
-      data.message ||
-      "⏳ منتظر حریف هستید...";
+  statusEl.textContent =
+    data.message ||
+    "⏳ منتظر حریف هستید...";
 
-  });
-
-
-  // =========================================
-  // پیدا شدن حریف
-  // =========================================
-
-  socket.on("matched", (data) => {
-
-    gameId = data.gameId;
-
-    myPlayerNumber = data.player;
-
-    waiting.style.display = "none";
-
-    menu.style.display = "none";
-
-    game.style.display = "block";
-
-    status.textContent =
-      "🎉 حریف پیدا شد!";
-
-    status.className =
-      "status success";
-
-  });
+});
 
 
-  // =========================================
-  // شروع بازی
-  // =========================================
+/* =========================================
+   پیدا شدن حریف
+========================================= */
 
-  socket.on("gameReady", (data) => {
+socket.on("matched", (data) => {
 
-    gameId = data.gameId;
+  gameId =
+    data.gameId;
 
-    currentBoard =
-      data.board || currentBoard;
+  myPlayerNumber =
+    data.player;
 
-    currentTurn =
-      data.turn;
+  waiting.style.display =
+    "none";
 
-    renderBoard();
+  menu.style.display =
+    "none";
+
+  game.style.display =
+    "block";
+
+  statusEl.textContent =
+    "🎉 حریف پیدا شد!";
+
+  statusEl.className =
+    "status success";
+
+});
+
+
+/* =========================================
+   شروع بازی
+========================================= */
+
+socket.on("gameReady", (data) => {
+
+  gameId =
+    data.gameId;
+
+  player1Id =
+    data.player1;
+
+  player2Id =
+    data.player2;
+
+  currentTurn =
+    data.turn;
+
+  if (data.board) {
+
+    boardState =
+      [...data.board];
+
+  }
+
+  renderBoard();
+
+  updateTurn();
+
+});
+
+
+/* =========================================
+   بازیکنان
+========================================= */
+
+socket.on("playersUpdate", (data) => {
+
+  if (data.count >= 2) {
+
+    document.getElementById(
+      "player1Status"
+    ).textContent =
+      "🟢 آنلاین";
+
+    document.getElementById(
+      "player2Status"
+    ).textContent =
+      "🟢 آنلاین";
+
+  }
+
+});
+
+
+/* =========================================
+   نوبت
+========================================= */
+
+function updateTurn() {
+
+  if (!currentTurn) {
+
+    turnEl.textContent =
+      "منتظر شروع بازی...";
+
+    return;
+  }
+
+  if (
+    currentTurn === socket.id
+  ) {
+
+    turnEl.textContent =
+      "🎯 نوبت شماست";
+
+    diceBtn.disabled =
+      diceValues.length > 0 &&
+      remainingMoves.length > 0;
+
+  } else {
+
+    turnEl.textContent =
+      "⏳ نوبت حریف است";
+
+    diceBtn.disabled =
+      true;
+
+  }
+
+}
+
+
+/* =========================================
+   تاس
+========================================= */
+
+diceBtn.addEventListener(
+  "click",
+  () => {
+
+    if (!gameId) {
+
+      alert(
+        "بازی هنوز شروع نشده."
+      );
+
+      return;
+    }
+
+    if (
+      currentTurn !== socket.id
+    ) {
+
+      alert(
+        "الان نوبت شما نیست."
+      );
+
+      return;
+    }
+
+    if (
+      remainingMoves.length > 0
+    ) {
+
+      alert(
+        "هنوز حرکت‌های تاس قبلی تمام نشده."
+      );
+
+      return;
+    }
+
+    const d1 =
+      Math.floor(
+        Math.random() * 6
+      ) + 1;
+
+    const d2 =
+      Math.floor(
+        Math.random() * 6
+      ) + 1;
+
+    diceValues =
+      [d1, d2];
+
+    remainingMoves =
+      d1 === d2
+        ? [d1, d1, d1, d1]
+        : [d1, d2];
+
+    showDice();
+
+    socket.emit(
+      "diceRolled",
+      {
+        gameId: gameId,
+        dice: diceValues
+      }
+    );
 
     updateTurn();
 
-  });
+  }
+);
 
 
-  // =========================================
-  // تعداد بازیکنان
-  // =========================================
+/* =========================================
+   نمایش تاس
+========================================= */
 
-  socket.on("playersUpdate", (data) => {
+function showDice() {
 
-    if (data.count >= 2) {
+  if (
+    !diceValues ||
+    diceValues.length < 2
+  ) {
 
-      document.getElementById(
-        "player1Status"
-      ).textContent = "🟢 آنلاین";
+    diceEl.textContent =
+      "🎲 🎲";
 
-      document.getElementById(
-        "player2Status"
-      ).textContent = "🟢 آنلاین";
+    return;
+  }
+
+  diceEl.textContent =
+    "🎲 " +
+    diceValues[0] +
+    "     🎲 " +
+    diceValues[1];
+
+}
+
+
+/* =========================================
+   دریافت تاس حریف
+========================================= */
+
+socket.on("diceRolled", (data) => {
+
+  diceValues =
+    data.dice || [];
+
+  showDice();
+
+});
+
+
+/* =========================================
+   ساخت تخته
+========================================= */
+
+function renderBoard() {
+
+  boardEl.innerHTML = "";
+
+  boardState.forEach(
+    (value, index) => {
+
+      const cell =
+        document.createElement("div");
+
+      cell.className =
+        "cell";
+
+      cell.dataset.index =
+        index;
+
+      const number =
+        document.createElement("div");
+
+      number.className =
+        "cell-number";
+
+      number.textContent =
+        index + 1;
+
+      cell.appendChild(number);
+
+
+      const checkers =
+        document.createElement("div");
+
+      checkers.className =
+        "checkers";
+
+
+      const count =
+        Math.abs(value);
+
+
+      for (
+        let i = 0;
+        i < count;
+        i++
+      ) {
+
+        const checker =
+          document.createElement("div");
+
+        checker.className =
+          "checker " +
+          (
+            value > 0
+              ? "white"
+              : "black"
+          );
+
+        checkers.appendChild(
+          checker
+        );
+
+      }
+
+
+      cell.appendChild(
+        checkers
+      );
+
+
+      cell.addEventListener(
+        "click",
+        () => {
+
+          handlePointClick(
+            index
+          );
+
+        }
+      );
+
+
+      boardEl.appendChild(cell);
 
     }
+  );
 
-  });
+  highlightSelected();
+
+}
 
 
-  // =========================================
-  // وضعیت بازی
-  // =========================================
+/* =========================================
+   تشخیص رنگ بازیکن
+========================================= */
 
-  socket.on("gameState", (data) => {
+function myCheckerValue() {
+
+  /*
+    بازیکن 1 = سفید
+    بازیکن 2 = سیاه
+  */
+
+  return myPlayerNumber === 1
+    ? 1
+    : -1;
+
+}
+
+
+/* =========================================
+   کلیک روی خانه
+========================================= */
+
+function handlePointClick(
+  point
+) {
+
+  if (
+    !gameId
+  ) return;
+
+  if (
+    currentTurn !== socket.id
+  ) {
+
+    alert(
+      "الان نوبت شما نیست."
+    );
+
+    return;
+  }
+
+
+  if (
+    remainingMoves.length === 0
+  ) {
+
+    alert(
+      "اول تاس بریزید."
+    );
+
+    return;
+  }
+
+
+  const mine =
+    myCheckerValue();
+
+
+  /*
+    مرحله اول:
+    انتخاب مهره
+  */
+
+  if (
+    selectedPoint === null
+  ) {
+
+    if (
+      boardState[point] * mine > 0
+    ) {
+
+      selectedPoint =
+        point;
+
+      highlightSelected();
+
+      return;
+
+    } else {
+
+      alert(
+        "این مهره متعلق به شما نیست."
+      );
+
+      return;
+    }
+
+  }
+
+
+  /*
+    کلیک دوباره روی همان خانه
+  */
+
+  if (
+    selectedPoint === point
+  ) {
+
+    selectedPoint =
+      null;
+
+    highlightSelected();
+
+    return;
+
+  }
+
+
+  /*
+    مرحله دوم:
+    انتخاب مقصد
+  */
+
+  const distance =
+    calculateDistance(
+      selectedPoint,
+      point
+    );
+
+
+  if (
+    distance === null
+  ) {
+
+    alert(
+      "حرکت در این جهت مجاز نیست."
+    );
+
+    return;
+
+  }
+
+
+  /*
+    بررسی اینکه عدد تاس وجود دارد
+  */
+
+  const moveIndex =
+    remainingMoves.indexOf(
+      distance
+    );
+
+
+  if (
+    moveIndex === -1
+  ) {
+
+    alert(
+      "این حرکت با تاس شما مطابقت ندارد."
+    );
+
+    return;
+
+  }
+
+
+  /*
+    بررسی خانه مقصد
+  */
+
+  const destination =
+    boardState[point];
+
+
+  /*
+    خانه‌ای که دو یا بیشتر مهره حریف دارد
+    بسته است.
+  */
+
+  if (
+    destination * mine < 0 &&
+    Math.abs(destination) >= 2
+  ) {
+
+    alert(
+      "این خانه بسته است."
+    );
+
+    return;
+
+  }
+
+
+  /*
+    انجام حرکت
+  */
+
+  boardState[
+    selectedPoint
+  ] -= mine;
+
+  /*
+    زدن مهره حریف
+  */
+
+  if (
+    boardState[point] * mine < 0
+  ) {
+
+    boardState[point] =
+      mine;
+
+  } else {
+
+    boardState[point] +=
+      mine;
+
+  }
+
+
+  /*
+    حذف تاس مصرف‌شده
+  */
+
+  remainingMoves.splice(
+    moveIndex,
+    1
+  );
+
+
+  selectedPoint =
+    null;
+
+
+  /*
+    اگر حرکت‌ها تمام شد
+    نوبت حریف
+  */
+
+  if (
+    remainingMoves.length === 0
+  ) {
+
+    diceValues =
+      [];
+
+    currentTurn =
+      currentTurn ===
+      player1Id
+        ? player2Id
+        : player1Id;
+
+    showDice();
+
+  }
+
+
+  renderBoard();
+
+  updateTurn();
+
+
+  /*
+    ارسال وضعیت به سرور
+  */
+
+  socket.emit(
+    "gameState",
+    {
+      gameId:
+        gameId,
+
+      board:
+        boardState,
+
+      dice:
+        diceValues,
+
+      turn:
+        currentTurn
+    }
+  );
+
+}
+
+
+/* =========================================
+   محاسبه جهت حرکت
+========================================= */
+
+function calculateDistance(
+  from,
+  to
+) {
+
+  /*
+    بازیکن اول:
+    از شماره پایین‌تر
+    به بالاتر حرکت می‌کند.
+
+    بازیکن دوم:
+    برعکس.
+
+    این نسخه برای تست حرکت
+    روی تخته 24 خانه طراحی شده.
+  */
+
+  if (
+    myPlayerNumber === 1
+  ) {
+
+    if (
+      to <= from
+    ) return null;
+
+    return to - from;
+
+  } else {
+
+    if (
+      to >= from
+    ) return null;
+
+    return from - to;
+
+  }
+
+}
+
+
+/* =========================================
+   هایلایت مهره انتخاب‌شده
+========================================= */
+
+function highlightSelected() {
+
+  document
+    .querySelectorAll(".cell")
+    .forEach(
+      cell => {
+
+        cell.classList.remove(
+          "selected"
+        );
+
+        cell.classList.remove(
+          "possible"
+        );
+
+      }
+    );
+
+
+  if (
+    selectedPoint === null
+  ) return;
+
+
+  const selected =
+    document.querySelector(
+      `.cell[data-index="${selectedPoint}"]`
+    );
+
+
+  if (selected) {
+
+    selected.classList.add(
+      "selected"
+    );
+
+  }
+
+
+  /*
+    نمایش خانه‌های ممکن
+  */
+
+  remainingMoves.forEach(
+    move => {
+
+      let destination;
+
+      if (
+        myPlayerNumber === 1
+      ) {
+
+        destination =
+          selectedPoint + move;
+
+      } else {
+
+        destination =
+          selectedPoint - move;
+
+      }
+
+
+      if (
+        destination >= 0 &&
+        destination < 24
+      ) {
+
+        const cell =
+          document.querySelector(
+            `.cell[data-index="${destination}"]`
+          );
+
+        if (cell) {
+
+          cell.classList.add(
+            "possible"
+          );
+
+        }
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================
+   دریافت وضعیت بازی از حریف
+========================================= */
+
+socket.on(
+  "gameState",
+  (data) => {
 
     if (data.board) {
 
-      currentBoard =
-        data.board;
+      boardState =
+        [...data.board];
 
       renderBoard();
 
@@ -564,7 +1281,10 @@
 
     if (data.dice) {
 
-      showDice(data.dice);
+      diceValues =
+        data.dice;
+
+      showDice();
 
     }
 
@@ -577,222 +1297,87 @@
 
     }
 
-  });
-
-
-  // =========================================
-  // تاس
-  // =========================================
-
-  diceBtn.addEventListener("click", () => {
-
-    if (!gameId) {
-
-      alert("بازی هنوز شروع نشده.");
-
-      return;
-    }
-
-    if (currentTurn !== socket.id) {
-
-      alert("الان نوبت شما نیست.");
-
-      return;
-    }
-
-    const d1 =
-      Math.floor(Math.random() * 6) + 1;
-
-    const d2 =
-      Math.floor(Math.random() * 6) + 1;
-
-    const rolledDice =
-      [d1, d2];
-
-    showDice(rolledDice);
-
-    socket.emit("diceRolled", {
-      gameId: gameId,
-      dice: rolledDice
-    });
-
-  });
-
-
-  socket.on("diceRolled", (data) => {
-
-    showDice(data.dice);
-
-  });
-
-
-  function showDice(values) {
-
-    if (!values || values.length < 2) {
-
-      dice.textContent =
-        "🎲 🎲";
-
-      return;
-    }
-
-    dice.textContent =
-      "🎲 " + values[0] +
-      "    🎲 " + values[1];
-
   }
+);
 
 
-  // =========================================
-  // نمایش تخته
-  // =========================================
+/* =========================================
+   چت
+========================================= */
 
-  function renderBoard() {
+function sendMessage() {
 
-    board.innerHTML = "";
+  const message =
+    chatInput.value.trim();
 
-    currentBoard.forEach(
-      (value, index) => {
-
-        const cell =
-          document.createElement("div");
-
-        cell.className =
-          "cell";
-
-        const number =
-          document.createElement("div");
-
-        number.className =
-          "cell-number";
-
-        number.textContent =
-          index + 1;
-
-        cell.appendChild(number);
+  if (!message) return;
 
 
-        const count =
-          Math.abs(value);
+  if (!gameId) {
 
-        for (
-          let i = 0;
-          i < count;
-          i++
-        ) {
-
-          const checker =
-            document.createElement("div");
-
-          checker.className =
-            "checker " +
-            (value > 0
-              ? "white"
-              : "black");
-
-          cell.appendChild(checker);
-
-        }
-
-        board.appendChild(cell);
-
-      }
+    alert(
+      "ابتدا وارد بازی شوید."
     );
 
+    return;
+
   }
 
 
-  // =========================================
-  // نوبت
-  // =========================================
+  socket.emit(
+    "chatMessage",
+    {
+      gameId:
+        gameId,
 
-  function updateTurn() {
-
-    if (!currentTurn) {
-
-      turn.textContent =
-        "منتظر شروع بازی...";
-
-      return;
+      message:
+        message
     }
+  );
+
+
+  chatInput.value =
+    "";
+
+}
+
+
+sendBtn.addEventListener(
+  "click",
+  sendMessage
+);
+
+
+chatInput.addEventListener(
+  "keydown",
+  event => {
 
     if (
-      currentTurn === socket.id
+      event.key === "Enter"
     ) {
 
-      turn.textContent =
-        "🎯 نوبت شماست";
-
-    } else {
-
-      turn.textContent =
-        "⏳ نوبت حریف است";
+      sendMessage();
 
     }
 
   }
+);
 
 
-  // =========================================
-  // چت
-  // =========================================
+/* =========================================
+   دریافت پیام
+========================================= */
 
-  function sendMessage() {
-
-    const message =
-      chatInput.value.trim();
-
-    if (!message) return;
-
-    if (!gameId) {
-
-      alert("ابتدا وارد بازی شوید.");
-
-      return;
-    }
-
-    socket.emit("chatMessage", {
-
-      gameId: gameId,
-
-      message: message
-
-    });
-
-    chatInput.value = "";
-
-  }
-
-
-  sendBtn.addEventListener(
-    "click",
-    sendMessage
-  );
-
-
-  chatInput.addEventListener(
-    "keydown",
-    (event) => {
-
-      if (
-        event.key === "Enter"
-      ) {
-
-        sendMessage();
-
-      }
-
-    }
-  );
-
-
-  socket.on("chatMessage", (data) => {
+socket.on(
+  "chatMessage",
+  data => {
 
     const div =
       document.createElement("div");
 
     div.className =
       "message";
+
 
     if (
       data.sender === socket.id
@@ -810,62 +1395,74 @@
 
     }
 
-    messages.appendChild(div);
+
+    messages.appendChild(
+      div
+    );
 
     messages.scrollTop =
       messages.scrollHeight;
 
-  });
+  }
+);
 
 
-  // =========================================
-  // خروج حریف
-  // =========================================
+/* =========================================
+   خروج حریف
+========================================= */
 
-  socket.on(
-    "opponentDisconnected",
-    (data) => {
+socket.on(
+  "opponentDisconnected",
+  data => {
 
-      status.textContent =
-        "⚠️ " +
-        (data.message ||
-        "حریف از بازی خارج شد.");
-
-      status.className =
-        "status error";
-
-      turn.textContent =
-        "بازی تمام شد";
-
-    }
-  );
-
-
-  // =========================================
-  // خطای ورود سریع
-  // =========================================
-
-  socket.on(
-    "quickJoinError",
-    (data) => {
-
-      quickJoinBtn.disabled =
-        false;
-
-      waiting.style.display =
-        "none";
-
-      alert(
+    statusEl.textContent =
+      "⚠️ " +
+      (
         data.message ||
-        "خطایی رخ داد."
+        "حریف از بازی خارج شد."
       );
 
-    }
-  );
+    statusEl.className =
+      "status error";
+
+    turnEl.textContent =
+      "بازی تمام شد";
+
+    diceBtn.disabled =
+      true;
+
+  }
+);
 
 
-  // نمایش اولیه تخته
-  renderBoard();
+/* =========================================
+   خطای ورود
+========================================= */
+
+socket.on(
+  "quickJoinError",
+  data => {
+
+    quickJoinBtn.disabled =
+      false;
+
+    waiting.style.display =
+      "none";
+
+    alert(
+      data.message ||
+      "خطایی در ورود رخ داد."
+    );
+
+  }
+);
+
+
+/* =========================================
+   نمایش اولیه
+========================================= */
+
+renderBoard();
 
 </script>
 
