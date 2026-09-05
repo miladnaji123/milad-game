@@ -3,1420 +3,162 @@
 
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport"
-content="width=device-width,initial-scale=1.0">
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-<title>🎲 Milad Game</title>
+<title>🎲 Milad Backgammon</title>
 
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 
 <style>
-
 *{
-box-sizing:border-box;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
 }
 
 body{
-margin:0;
-font-family:
-Tahoma,
-Arial,
-sans-serif;
-
-background:
-linear-gradient(
-135deg,
-#f6efe3,
-#d9b98c
-);
-
-color:#292016;
-
-min-height:100vh;
+    background:
+        radial-gradient(circle at center,#4b301d 0,#24150d 55%,#100905 100%);
+    color:#fff;
+    font-family:Tahoma,Arial,sans-serif;
+    overflow-x:hidden;
 }
 
-.container{
-width:96%;
-max-width:1000px;
-margin:auto;
-padding:15px;
+/* =====================================================
+   APP
+===================================================== */
+
+.app{
+    width:100%;
+    max-width:1500px;
+    margin:auto;
+    min-height:100vh;
+    padding:12px;
 }
 
-h1{
-text-align:center;
-font-size:30px;
-margin:8px 0 15px;
-color:#542c13;
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+.topbar{
+    width:100%;
+    max-width:1180px;
+    margin:0 auto 10px;
+    padding:10px 14px;
+    border-radius:14px;
+    background:
+        linear-gradient(180deg,#6d3515,#351707);
+    border:2px solid #9e602d;
+    box-shadow:
+        0 5px 15px #000,
+        inset 0 1px rgba(255,255,255,.25);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
 }
 
-.status{
-background:#fff;
-border-radius:15px;
-padding:13px;
-margin:10px 0;
-box-shadow:
-0 4px 12px rgba(0,0,0,.12);
-font-weight:bold;
+.logo{
+    color:#ffd77d;
+    font-size:22px;
+    font-weight:bold;
 }
 
-.success{
-color:#16803b;
+.server-status{
+    font-size:13px;
+    color:#7dff9b;
 }
 
-.error{
-color:#b42318;
+/* =====================================================
+   LOBBY
+===================================================== */
+
+.lobby{
+    width:96%;
+    max-width:650px;
+    margin:30px auto;
+    padding:25px;
+    background:
+        linear-gradient(145deg,#5a2c13,#291108);
+    border:2px solid #a35e27;
+    border-radius:18px;
+    box-shadow:0 10px 35px #000;
+    text-align:center;
+}
+
+.lobby h1{
+    color:#ffd783;
+    margin-top:0;
+}
+
+.lobby h2{
+    color:#fff0c2;
+}
+
+.room-input{
+    width:100%;
+    max-width:300px;
+    padding:14px;
+    border-radius:10px;
+    border:2px solid #a85f22;
+    background:#160b06;
+    color:#fff;
+    text-align:center;
+    font-size:20px;
+    letter-spacing:4px;
+    outline:none;
 }
 
 button{
-border:0;
-border-radius:13px;
-padding:13px 20px;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-box-shadow:
-0 4px 8px rgba(0,0,0,.15);
+    border:0;
+    border-radius:10px;
+    padding:13px 22px;
+    margin:6px;
+    background:
+        linear-gradient(180deg,#c9792b,#7c3d12);
+    border:2px solid #e7a052;
+    color:white;
+    font-family:Tahoma;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:
+        0 4px 8px #000,
+        inset 0 1px rgba(255,255,255,.3);
 }
 
-button:disabled{
-opacity:.45;
-cursor:not-allowed;
+button:active{
+    transform:scale(.96);
 }
 
-#quickJoinBtn{
-width:100%;
-max-width:360px;
-background:#16803b;
-color:white;
-font-size:18px;
+.lobby-message{
+    min-height:25px;
+    margin-top:12px;
+    color:#ffd77d;
 }
 
-.menu{
-text-align:center;
-padding:25px 0;
-}
-
-.waiting{
-display:none;
-background:white;
-padding:20px;
-border-radius:15px;
-margin-top:15px;
-box-shadow:
-0 4px 12px rgba(0,0,0,.12);
-}
+/* =====================================================
+   GAME WRAPPER
+===================================================== */
 
 .game{
-display:none;
+    display:none;
 }
 
-.players{
-display:flex;
-gap:10px;
-margin:12px 0;
+.game.active{
+    display:block;
 }
 
-.player{
-flex:1;
-background:white;
-padding:12px;
-border-radius:14px;
-box-shadow:
-0 4px 10px rgba(0,0,0,.12);
-}
-
-#turn{
-text-align:center;
-font-size:17px;
-}
-
-.dice-area{
-background:#fff;
-border-radius:16px;
-padding:15px;
-margin:12px 0;
-text-align:center;
-box-shadow:
-0 4px 12px rgba(0,0,0,.12);
-}
-
-#diceBtn{
-background:#2463eb;
-color:white;
-font-size:18px;
-}
-
-#dice{
-display:flex;
-justify-content:center;
-gap:15px;
-margin:12px 0;
-}
-
-.die{
-width:58px;
-height:58px;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-background:white;
-
-border:3px solid #333;
-
-border-radius:13px;
-
-font-size:32px;
-font-weight:bold;
-
-box-shadow:
-0 4px 8px rgba(0,0,0,.2);
-}
-
-.board-wrapper{
-background:
-linear-gradient(
-135deg,
-#6b3519,
-#9a572b
-);
-
-padding:13px;
-
-border-radius:20px;
-
-box-shadow:
-0 8px 18px rgba(0,0,0,.25);
-}
-
-.board{
-display:grid;
-
-grid-template-columns:
-repeat(12,1fr);
-
-gap:4px;
-
-background:#43200e;
-
-padding:7px;
-
-border-radius:14px;
-}
-
-.cell{
-position:relative;
-
-min-height:145px;
-
-background:#e0aa63;
-
-border-radius:7px;
-
-display:flex;
-
-flex-direction:column;
-
-align-items:center;
-
-padding-top:7px;
-
-cursor:pointer;
-
-transition:
-.15s;
-}
-
-.cell:nth-child(even){
-background:#bd7237;
-}
-
-.cell:hover{
-transform:scale(1.02);
-}
-
-.cell.selected{
-outline:
-4px solid #ffd900;
-
-box-shadow:
-0 0 15px #ffd900;
-
-z-index:3;
-}
-
-.cell.possible{
-outline:
-4px solid #21d66b;
-
-box-shadow:
-0 0 12px #21d66b;
-}
-
-.cell-number{
-font-size:11px;
-font-weight:bold;
-color:#40200c;
-margin-bottom:4px;
-}
-
-.checkers{
-display:flex;
-flex-direction:column;
-align-items:center;
-}
-
-.checker{
-width:34px;
-height:34px;
-
-border-radius:50%;
-
-margin:2px;
-
-box-shadow:
-0 3px 6px rgba(0,0,0,.4);
-
-border:2px solid #222;
-}
-
-.white{
-background:
-radial-gradient(
-circle at 35% 30%,
-#fff,
-#ddd
-);
-}
-
-.black{
-background:
-radial-gradient(
-circle at 35% 30%,
-#555,
-#111
-);
-
-border-color:#777;
-}
-
-.help{
-text-align:center;
-font-size:13px;
-color:#725d48;
-margin-top:8px;
-}
-
-.chat{
-background:white;
-
-padding:14px;
-
-border-radius:16px;
-
-margin-top:15px;
-
-box-shadow:
-0 4px 12px rgba(0,0,0,.12);
-}
-
-.chat h3{
-margin-top:0;
-}
-
-#messages{
-height:180px;
-
-overflow-y:auto;
-
-background:#f4f1ec;
-
-border-radius:12px;
-
-padding:8px;
-}
-
-.message{
-background:white;
-
-padding:8px;
-
-border-radius:9px;
-
-margin:5px 0;
-
-box-shadow:
-0 2px 4px rgba(0,0,0,.08);
-}
-
-.chat-row{
-display:flex;
-
-gap:7px;
-
-margin-top:9px;
-}
-
-#chatInput{
-flex:1;
-
-border:1px solid #ccc;
-
-border-radius:10px;
-
-padding:12px;
-
-font-size:15px;
-}
-
-#sendBtn{
-background:#16803b;
-color:white;
-}
-
-@media(max-width:650px){
-
-h1{
-font-size:24px;
-}
-
-.cell{
-min-height:92px;
-}
-
-.checker{
-width:23px;
-height:23px;
-}
-
-.board{
-gap:2px;
-padding:4px;
-}
-
-.cell-number{
-font-size:8px;
-}
-
-.players{
-font-size:13px;
-}
-
-.die{
-width:50px;
-height:50px;
-font-size:27px;
-}
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-<h1>🎲 Milad Game</h1>
-
-<div
-id="status"
-class="status">
-
-⏳ در حال اتصال به سرور...
-
-</div>
-
-<div
-id="menu"
-class="menu">
-
-<button
-id="quickJoinBtn">
-
-⚡ ورود سریع بدون کد
-
-</button>
-
-<div
-id="waiting"
-class="waiting">
-
-⏳ منتظر پیدا شدن حریف هستید...
-
-<br><br>
-
-بازیکن دوم که وارد شود،
-بازی خودکار شروع می‌شود. 🎮
-
-</div>
-
-</div>
-
-
-<div
-id="game"
-class="game">
-
-<div class="players">
-
-<div class="player">
-
-⚪ بازیکن اول
-
-<br>
-
-<span id="player1Status">
-🔴 انتظار
-</span>
-
-</div>
-
-<div class="player">
-
-⚫ بازیکن دوم
-
-<br>
-
-<span id="player2Status">
-🔴 انتظار
-</span>
-
-</div>
-
-</div>
-
-
-<div
-id="turn"
-class="status">
-
-منتظر شروع بازی...
-
-</div>
-
-
-<div class="dice-area">
-
-<button id="diceBtn">
-
-🎲 ریختن تاس
-
-</button>
-
-<div id="dice">
-
-<div class="die">⚀</div>
-
-<div class="die">⚀</div>
-
-</div>
-
-<div class="help">
-
-ابتدا تاس بریزید،
-بعد روی مهره خود و
-سپس خانه مقصد بزنید.
-
-</div>
-
-</div>
-
-
-<div class="board-wrapper">
-
-<div
-id="board"
-class="board">
-
-</div>
-
-</div>
-
-
-<div class="chat">
-
-<h3>💬 چت بازی</h3>
-
-<div id="messages">
-
-<div class="message">
-
-🌹 به چت Milad Game خوش آمدید
-
-</div>
-
-</div>
-
-<div class="chat-row">
-
-<input
-id="chatInput"
-maxlength="500"
-placeholder="پیام خود را بنویسید...">
-
-<button id="sendBtn">
-
-ارسال
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<script>
-
-const SERVER_URL =
-"https://milad-game-server.onrender.com";
-
-
-const socket =
-io(SERVER_URL,{
-transports:[
-"websocket",
-"polling"
-]
-});
-
-
-let gameId=null;
-
-let myPlayerNumber=null;
-
-let player1Id=null;
-
-let player2Id=null;
-
-let currentTurn=null;
-
-let boardState=[
-2,0,0,0,0,-5,
-0,-3,0,0,0,5,
--5,0,0,0,3,0,
-5,0,0,0,0,-2
-];
-
-let diceValues=[];
-
-let remainingMoves=[];
-
-let selectedPoint=null;
-
-
-const statusEl=
-document.getElementById("status");
-
-const menu=
-document.getElementById("menu");
-
-const game=
-document.getElementById("game");
-
-const waiting=
-document.getElementById("waiting");
-
-const quickJoinBtn=
-document.getElementById("quickJoinBtn");
-
-const boardEl=
-document.getElementById("board");
-
-const diceEl=
-document.getElementById("dice");
-
-const diceBtn=
-document.getElementById("diceBtn");
-
-const turnEl=
-document.getElementById("turn");
-
-const messages=
-document.getElementById("messages");
-
-const chatInput=
-document.getElementById("chatInput");
-
-const sendBtn=
-document.getElementById("sendBtn");
-
-
-socket.on("connect",()=>{
-
-statusEl.textContent=
-"🟢 اتصال به سرور برقرار است";
-
-statusEl.className=
-"status success";
-
-quickJoinBtn.disabled=false;
-
-});
-
-
-socket.on("connect_error",()=>{
-
-statusEl.textContent=
-"🔴 اتصال به سرور برقرار نشد";
-
-statusEl.className=
-"status error";
-
-quickJoinBtn.disabled=true;
-
-});
-
-
-socket.on("disconnect",()=>{
-
-statusEl.textContent=
-"⚠️ اتصال به سرور قطع شد";
-
-statusEl.className=
-"status error";
-
-});
-
-
-quickJoinBtn.addEventListener(
-"click",
-()=>{
-
-if(!socket.connected){
-
-alert(
-"به سرور متصل نیستید."
-);
-
-return;
-
-}
-
-quickJoinBtn.disabled=true;
-
-waiting.style.display=
-"block";
-
-statusEl.textContent=
-"⏳ در حال پیدا کردن حریف...";
-
-socket.emit("quickJoin");
-
-});
-
-
-socket.on(
-"waiting",
-data=>{
-
-waiting.style.display=
-"block";
-
-statusEl.textContent=
-data.message;
-
-});
-
-
-socket.on(
-"matched",
-data=>{
-
-gameId=data.gameId;
-
-myPlayerNumber=data.player;
-
-waiting.style.display=
-"none";
-
-menu.style.display=
-"none";
-
-game.style.display=
-"block";
-
-statusEl.textContent=
-"🎉 حریف پیدا شد!";
-
-statusEl.className=
-"status success";
-
-});
-
-
-socket.on(
-"gameReady",
-data=>{
-
-gameId=data.gameId;
-
-player1Id=data.player1;
-
-player2Id=data.player2;
-
-currentTurn=data.turn;
-
-boardState=[
-...data.board
-];
-
-diceValues=
-data.dice || [];
-
-remainingMoves=
-data.remainingMoves || [];
-
-renderBoard();
-
-showDice();
-
-updateTurn();
-
-});
-
-
-socket.on(
-"playersUpdate",
-data=>{
-
-if(data.count>=2){
-
-document.getElementById(
-"player1Status"
-).textContent=
-"🟢 آنلاین";
-
-document.getElementById(
-"player2Status"
-).textContent=
-"🟢 آنلاین";
-
-}
-
-});
-
-
-function updateTurn(){
-
-if(!currentTurn){
-
-turnEl.textContent=
-"منتظر شروع بازی...";
-
-diceBtn.disabled=true;
-
-return;
-
-}
-
-if(currentTurn===socket.id){
-
-turnEl.textContent=
-"🎯 نوبت شماست";
-
-diceBtn.disabled=
-remainingMoves.length>0;
-
-}else{
-
-turnEl.textContent=
-"⏳ نوبت حریف است";
-
-diceBtn.disabled=true;
-
-}
-
-}
-
-
-diceBtn.addEventListener(
-"click",
-()=>{
-
-if(!gameId){
-
-alert(
-"بازی هنوز شروع نشده."
-);
-
-return;
-
-}
-
-if(currentTurn!==socket.id){
-
-alert(
-"الان نوبت شما نیست."
-);
-
-return;
-
-}
-
-if(remainingMoves.length>0){
-
-alert(
-"هنوز حرکت‌های قبلی باقی مانده."
-);
-
-return;
-
-}
-
-socket.emit(
-"rollDice",
-{
-gameId:gameId
-}
-);
-
-});
-
-
-socket.on(
-"gameState",
-data=>{
-
-if(data.gameId &&
-gameId &&
-data.gameId!==gameId){
-
-return;
-
-}
-
-if(data.board){
-
-boardState=[
-...data.board
-];
-
-}
-
-diceValues=
-data.dice || [];
-
-remainingMoves=
-data.remainingMoves || [];
-
-currentTurn=
-data.turn;
-
-renderBoard();
-
-showDice();
-
-updateTurn();
-
-});
-
-
-socket.on(
-"moveError",
-data=>{
-
-alert(
-data.message ||
-"حرکت انجام نشد."
-);
-
-});
-
-
-function showDice(){
-
-diceEl.innerHTML="";
-
-if(
-!diceValues ||
-diceValues.length===0
-){
-
-diceEl.innerHTML=
-'<div class="die">⚀</div>' +
-'<div class="die">⚀</div>';
-
-return;
-
-}
-
-diceValues.forEach(
-number=>{
-
-const die=
-document.createElement("div");
-
-die.className="die";
-
-die.textContent=
-number;
-
-diceEl.appendChild(die);
-
-});
-
-}
-
-
-function renderBoard(){
-
-boardEl.innerHTML="";
-
-boardState.forEach(
-(value,index)=>{
-
-const cell=
-document.createElement("div");
-
-cell.className="cell";
-
-cell.dataset.index=index;
-
-
-const number=
-document.createElement("div");
-
-number.className=
-"cell-number";
-
-number.textContent=
-index+1;
-
-cell.appendChild(number);
-
-
-const checkers=
-document.createElement("div");
-
-checkers.className=
-"checkers";
-
-
-const count=
-Math.abs(value);
-
-
-for(
-let i=0;
-i<count;
-i++
-){
-
-const checker=
-document.createElement("div");
-
-checker.className=
-"checker "+
-(
-value>0
-?"white"
-:"black"
-);
-
-checkers.appendChild(
-checker
-);
-
-}
-
-
-cell.appendChild(checkers);
-
-
-cell.addEventListener(
-"click",
-()=>{
-
-handlePointClick(index);
-
-});
-
-
-boardEl.appendChild(cell);
-
-});
-
-
-highlightSelected();
-
-}
-
-
-function myValue(){
-
-return myPlayerNumber===1
-?1
-:-1;
-
-}
-
-
-function handlePointClick(point){
-
-if(!gameId){
-
-return;
-
-}
-
-if(currentTurn!==socket.id){
-
-alert(
-"⏳ الان نوبت حریف است."
-);
-
-return;
-
-}
-
-if(remainingMoves.length===0){
-
-alert(
-"🎲 ابتدا تاس بریزید."
-);
-
-return;
-
-}
-
-
-const mine=
-myValue();
-
-
-if(selectedPoint===null){
-
-if(
-boardState[point]*mine>0
-){
-
-selectedPoint=point;
-
-highlightSelected();
-
-}else{
-
-alert(
-"این مهره متعلق به شما نیست."
-);
-
-}
-
-return;
-
-}
-
-
-if(selectedPoint===point){
-
-selectedPoint=null;
-
-highlightSelected();
-
-return;
-
-}
-
-
-let distance;
-
-
-if(myPlayerNumber===1){
-
-distance=
-point-selectedPoint;
-
-}else{
-
-distance=
-selectedPoint-point;
-
-}
-
-
-if(distance<=0){
-
-alert(
-"↔️ جهت حرکت اشتباه است."
-);
-
-return;
-
-}
-
-
-if(
-!remainingMoves.includes(
-distance
-)
-){
-
-alert(
-"🎲 این حرکت با تاس شما مطابقت ندارد."
-);
-
-return;
-
-}
-
-
-const target=
-boardState[point];
-
-
-if(
-target*mine<0 &&
-Math.abs(target)>=2
-){
-
-alert(
-"🚧 این خانه بسته است."
-);
-
-return;
-
-}
-
-
-const from=
-selectedPoint;
-
-
-selectedPoint=null;
-
-socket.emit(
-"move",
-{
-gameId:gameId,
-from:from,
-to:point
-}
-);
-
-}
-
-
-function highlightSelected(){
-
-document
-.querySelectorAll(".cell")
-.forEach(
-cell=>{
-
-cell.classList.remove(
-"selected"
-);
-
-cell.classList.remove(
-"possible"
-);
-
-});
-
-
-if(selectedPoint===null){
-
-return;
-
-}
-
-
-const selected=
-document.querySelector(
-`.cell[data-index="${selectedPoint}"]`
-);
-
-
-if(selected){
-
-selected.classList.add(
-"selected"
-);
-
-}
-
-
-remainingMoves.forEach(
-move=>{
-
-let destination;
-
-
-if(myPlayerNumber===1){
-
-destination=
-selectedPoint+move;
-
-}else{
-
-destination=
-selectedPoint-move;
-
-}
-
-
-if(
-destination>=0 &&
-destination<24
-){
-
-const cell=
-document.querySelector(
-`.cell[data-index="${destination}"]`
-);
-
-
-if(cell){
-
-const target=
-boardState[destination];
-
-const mine=
-myValue();
-
-
-if(
-!(target*mine<0 &&
-Math.abs(target)>=2)
-){
-
-cell.classList.add(
-"possible"
-);
-
-}
-
-}
-
-}
-
-});
-
-}
-
-
-function sendMessage(){
-
-const message=
-chatInput.value.trim();
-
-
-if(!message){
-
-return;
-
-}
-
-if(!gameId){
-
-alert(
-"ابتدا وارد بازی شوید."
-);
-
-return;
-
-}
-
-
-socket.emit(
-"chatMessage",
-{
-gameId:gameId,
-message:message
-}
-);
-
-
-chatInput.value="";
-
-}
-
-
-sendBtn.addEventListener(
-"click",
-sendMessage
-);
-
-
-chatInput.addEventListener(
-"keydown",
-event=>{
-
-if(event.key==="Enter"){
-
-sendMessage();
-
-}
-
-});
-
-
-socket.on(
-"chatMessage",
-data=>{
-
-const div=
-document.createElement("div");
-
-div.className=
-"message";
-
-
-if(
-data.sender===socket.id
-){
-
-div.textContent=
-"🟢 شما: "+
-data.message;
-
-}else{
-
-div.textContent=
-"🔵 حریف: "+
-data.message;
-
-}
-
-
-messages.appendChild(div);
-
-messages.scrollTop=
-messages.scrollHeight;
-
-});
-
-
-socket.on(
-"opponentDisconnected",
-data=>{
-
-statusEl.textContent=
-data.message ||
-"⚠️ حریف از بازی خارج شد.";
-
-statusEl.className=
-"status error";
-
-turnEl.textContent=
-"🏁 بازی تمام شد";
-
-diceBtn.disabled=true;
-
-});
-
-
-renderBoard();
-
-</script>
+/* =====================================================
+   MAIN GAME
+===================================================== */
 
-</body>
-</html>
+.game-layout{
+    width:100%;
+    max-width:126
