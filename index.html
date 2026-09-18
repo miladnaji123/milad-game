@@ -2,50 +2,190 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Milad Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Milad Game 🎲</title>
+
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+
 <style>
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
 body{
     margin:0;
     min-height:100vh;
-    background:#24130b;
-    color:white;
+    background:
+        radial-gradient(circle at top,#70401f 0,#35180c 48%,#160805 100%);
+    color:#fff;
     font-family:Tahoma,Arial,sans-serif;
+}
+
+button{
+    border:0;
+    border-radius:12px;
+    padding:13px 20px;
+    margin:5px;
+    color:#fff;
+    background:linear-gradient(#bd702f,#713313);
+    border:1px solid #e2a45b;
+    font-family:Tahoma;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 5px 12px #0008;
+}
+
+button:hover{
+    filter:brightness(1.12);
+}
+
+button:active{
+    transform:scale(.96);
+}
+
+button.green{
+    background:linear-gradient(#2bea7a,#119646);
+}
+
+button.gray{
+    background:linear-gradient(#685346,#30251f);
+}
+
+input{
+    width:100%;
+    padding:13px;
+    margin:6px 0;
+    border-radius:10px;
+    border:1px solid #a96535;
+    background:#1d0c06;
+    color:#fff;
+    font-family:Tahoma;
+    font-size:16px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#efbd72;
+}
+
+header{
+    height:58px;
+    padding:10px 15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#160805dd;
+    border-bottom:1px solid #8c5228;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    color:#f3cc82;
+    font-size:21px;
+    font-weight:bold;
+}
+
+.status{
+    padding:6px 11px;
+    border-radius:20px;
+    background:#3b180d;
+    color:#ffb59e;
+    font-size:12px;
+}
+
+.status.online{
+    background:#10351e;
+    color:#75ffab;
+}
+
+/* LOBBY */
+
+#lobby{
+    max-width:620px;
+    margin:30px auto;
+    padding:15px;
     text-align:center;
 }
-.box{
-    margin:60px auto;
-    width:90%;
-    max-width:600px;
-    padding:30px;
-    background:#3a1d0e;
-    border:2px solid #a85f22;
+
+.logo-big{
+    font-size:60px;
+}
+
+#lobby h1{
+    color:#f3ce87;
+    margin:5px;
+}
+
+.subtitle{
+    color:#d9bd8b;
+    margin:10px 0 25px;
+}
+
+.card{
+    background:linear-gradient(145deg,#562918,#251108);
+    border:1px solid #91542b;
     border-radius:20px;
+    padding:20px;
+    margin:15px 0;
+    box-shadow:0 12px 30px #0008;
 }
-button{
-    padding:15px 25px;
-    margin:10px;
-    border:0;
-    border-radius:10px;
-    background:#a85f22;
-    color:white;
-    font-size:18px;
+
+.card h2{
+    color:#f1ca7f;
 }
-</style>
-</head>
 
-<body>
+.room-row{
+    display:flex;
+    gap:8px;
+}
 
-<div class="box">
-    <h1>🎲 میلاد گیم</h1>
-    <h2>بازی تخته نرد</h2>
+.room-row input{
+    flex:1;
+}
 
-    <p>صفحه بازی با موفقیت اجرا شد ✅</p>
+.message{
+    min-height:25px;
+    color:#ffd98d;
+    margin-top:10px;
+}
 
-    <button onclick="alert('بازی آفلاین آماده است 🎮')">
-        🎮 بازی آفلاین
-    </button>
-</div>
+/* GAME */
 
-</body>
-</html>
+#game{
+    display:none;
+    width:100%;
+    padding:10px;
+}
+
+.game-container{
+    max-width:1100px;
+    margin:auto;
+}
+
+.players{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.player{
+    width:220px;
+    padding:10px;
+    border-radius:16px;
+    background:linear-gradient(145deg,#512716,#211007);
+    border:1px solid #92532a;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    box-shadow:0 8px 20px #0008;
+}
+
+.player.active{
+    box-shadow:
+        0 0 0 3px #20e96b,
+        0 0 22px
